@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -342,6 +341,7 @@ let filteredQuestions = [];
 // Load saved state
 const SHEET_ID_KEY = 'treeTrainerSheetId';
 const STATS_KEY = 'treeTrainerStats';
+const DEFAULT_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS_G_lHFyix5UAzmU4UZhlgTzX3T--lxPBO0eF_U53jNQEjSEs2Y3D4JPNKnO8eajyCSAtT1VPZMdFg/pub?output=tsv';
 
 function loadStats() {
   const saved = localStorage.getItem(STATS_KEY);
@@ -396,35 +396,22 @@ function saveSheetId() {
 }
 
 function checkSetup() {
-  const csvUrl = localStorage.getItem(SHEET_ID_KEY);
-  if (!csvUrl) {
-    document.getElementById('setupBanner').classList.remove('hidden');
-    document.getElementById('loadingIndicator').classList.add('hidden');
-    return false;
- // Show image if available
-const imageContainer = document.getElementById('imageContainer');
-if (q.imageRef && q.imageRef.trim() !== '') {
-  // Determine level based on question ID
-  const level = q.id <= 60 ? 'level1' : 'level2';
+  let csvUrl = localStorage.getItem(SHEET_ID_KEY);
   
-  // Build full GitHub Pages URL (handles .svg, .jpg, .png)
-  let imageUrl;
-  if (q.imageRef.startsWith('http')) {
-    // Already a full URL
-    imageUrl = q.imageRef;
-  } else if (q.imageRef.includes('/')) {
-    // Relative path like "level2/041"
-    imageUrl = `https://joeycost27.github.io/pti-trainer/images/${q.imageRef}.svg`;
-  } else {
-    // Just filename like "041"
-    imageUrl = `https://joeycost27.github.io/pti-trainer/images/${level}/${q.imageRef}.svg`;
+  // If no saved URL, use the default
+  if (!csvUrl) {
+    csvUrl = DEFAULT_TSV_URL;
+    localStorage.setItem(SHEET_ID_KEY, csvUrl);
   }
   
-  imageContainer.innerHTML = `<img src="${imageUrl}" alt="Question ${q.id}" onerror="this.parentElement.classList.add('hidden')">`;
-  imageContainer.classList.remove('hidden');
-} else {
-  imageContainer.classList.add('hidden');
+  document.getElementById('setupBanner').classList.add('hidden');
+  return true;
 }
+
+function changeUrl() {
+  localStorage.removeItem(SHEET_ID_KEY);
+  document.getElementById('setupBanner').classList.remove('hidden');
+  document.getElementById('questionDisplay').classList.add('hidden');
   document.getElementById('sheetIdInput').value = '';
   document.getElementById('sheetIdInput').focus();
 }
@@ -531,7 +518,7 @@ function filterQuestions() {
 
 function showError(message) {
   const errorDiv = document.getElementById('errorDisplay');
-  errorDiv.textContent = '❌ Error: ' + message;
+  errorDiv.textContent = '⚠ Error: ' + message;
   errorDiv.classList.remove('hidden');
 }
 
@@ -568,10 +555,26 @@ function displayQuestion(q) {
   // Clear previous state
   document.getElementById('explanation').classList.remove('show');
   
-  // Show image if available
+  // Show image if available (FIXED IMAGE LOADING)
   const imageContainer = document.getElementById('imageContainer');
-  if (q.imageRef) {
-    imageContainer.innerHTML = `<img src="images/${q.imageRef}.jpg" alt="Question ${q.id}" onerror="this.parentElement.classList.add('hidden')">`;
+  if (q.imageRef && q.imageRef.trim() !== '') {
+    // Determine level based on question ID
+    const level = q.id <= 60 ? 'level1' : 'level2';
+    
+    // Build full GitHub Pages URL (handles .svg, .jpg, .png)
+    let imageUrl;
+    if (q.imageRef.startsWith('http')) {
+      // Already a full URL
+      imageUrl = q.imageRef;
+    } else if (q.imageRef.includes('/')) {
+      // Relative path like "level2/041"
+      imageUrl = `https://joeycost27.github.io/pti-trainer/images/${q.imageRef}.svg`;
+    } else {
+      // Just filename like "041"
+      imageUrl = `https://joeycost27.github.io/pti-trainer/images/${level}/${q.imageRef}.svg`;
+    }
+    
+    imageContainer.innerHTML = `<img src="${imageUrl}" alt="Question ${q.id}" onerror="this.parentElement.classList.add('hidden')">`;
     imageContainer.classList.remove('hidden');
   } else {
     imageContainer.classList.add('hidden');
@@ -644,7 +647,7 @@ function showExplanation(q, isCorrect) {
   const explanation = document.getElementById('explanation');
   
   let html = isCorrect
-    ? '<p style="color: #22c55e; font-weight: bold; font-size: 1.1rem;">✔ Correct!</p>'
+    ? '<p style="color: #22c55e; font-weight: bold; font-size: 1.1rem;">✓ Correct!</p>'
     : '<p style="color: #ef4444; font-weight: bold; font-size: 1.1rem;">✗ Incorrect</p>';
   
   html += `<p><strong>Key Learning:</strong> ${q.learn}</p>`;
