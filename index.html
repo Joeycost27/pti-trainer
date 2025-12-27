@@ -401,15 +401,30 @@ function checkSetup() {
     document.getElementById('setupBanner').classList.remove('hidden');
     document.getElementById('loadingIndicator').classList.add('hidden');
     return false;
+ // Show image if available
+const imageContainer = document.getElementById('imageContainer');
+if (q.imageRef && q.imageRef.trim() !== '') {
+  // Determine level based on question ID
+  const level = q.id <= 60 ? 'level1' : 'level2';
+  
+  // Build full GitHub Pages URL (handles .svg, .jpg, .png)
+  let imageUrl;
+  if (q.imageRef.startsWith('http')) {
+    // Already a full URL
+    imageUrl = q.imageRef;
+  } else if (q.imageRef.includes('/')) {
+    // Relative path like "level2/041"
+    imageUrl = `https://joeycost27.github.io/pti-trainer/images/${q.imageRef}.svg`;
+  } else {
+    // Just filename like "041"
+    imageUrl = `https://joeycost27.github.io/pti-trainer/images/${level}/${q.imageRef}.svg`;
   }
-  document.getElementById('setupBanner').classList.add('hidden');
-  return true;
+  
+  imageContainer.innerHTML = `<img src="${imageUrl}" alt="Question ${q.id}" onerror="this.parentElement.classList.add('hidden')">`;
+  imageContainer.classList.remove('hidden');
+} else {
+  imageContainer.classList.add('hidden');
 }
-
-function changeUrl() {
-  localStorage.removeItem(SHEET_ID_KEY);
-  document.getElementById('setupBanner').classList.remove('hidden');
-  document.getElementById('questionDisplay').classList.add('hidden');
   document.getElementById('sheetIdInput').value = '';
   document.getElementById('sheetIdInput').focus();
 }
