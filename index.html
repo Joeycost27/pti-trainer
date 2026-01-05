@@ -21,31 +21,184 @@ h1 {
   margin-bottom: 30px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
-.setup-banner {
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+
+/* Level Selection */
+.level-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.level-card {
+  background: linear-gradient(135deg, #1e293b, #334155);
   padding: 20px;
   border-radius: 12px;
-  margin-bottom: 20px;
-  border: 2px solid #60a5fa;
+  border: 2px solid rgba(34,197,94,0.2);
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
 }
-.setup-banner h3 { color: #fff; margin-bottom: 10px; }
-.setup-banner input {
-  width: 100%;
+.level-card:hover:not(.locked) {
+  transform: translateY(-4px);
+  border-color: #22c55e;
+  box-shadow: 0 8px 16px rgba(34,197,94,0.3);
+}
+.level-card.active {
+  border-color: #22c55e;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+.level-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: rgba(100,116,139,0.3);
+}
+.level-card.locked::after {
+  content: '🔒';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+}
+.level-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+}
+.level-card.locked .level-title { color: #94a3b8; }
+.level-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 12px;
+}
+.level-card.locked .level-subtitle { color: #64748b; }
+.level-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+.level-card.locked .level-stats { border-color: rgba(100,116,139,0.2); }
+.unlock-requirement {
+  background: rgba(15,23,42,0.8);
   padding: 10px;
   border-radius: 6px;
-  border: none;
-  margin: 10px 0;
-  font-size: 14px;
+  font-size: 0.8rem;
+  color: #fbbf24;
+  text-align: center;
+  margin-top: 8px;
 }
-.setup-banner button {
-  background: #fff;
-  color: #3b82f6;
-  padding: 10px 20px;
-  border: none;
+
+/* Difficulty Toggle for Level 1 */
+.difficulty-toggle {
+  background: rgba(30,41,59,0.8);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: none;
+}
+.difficulty-toggle.show { display: block; }
+.difficulty-toggle label {
+  color: #cbd5e1;
+  font-weight: 600;
+  margin-right: 15px;
+}
+.difficulty-buttons {
+  display: inline-flex;
+  gap: 10px;
+}
+.diff-btn {
+  padding: 8px 16px;
+  border: 2px solid rgba(100,116,139,0.3);
+  background: rgba(15,23,42,0.6);
+  color: #f1f5f9;
   border-radius: 6px;
-  font-weight: 700;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.diff-btn:hover {
+  border-color: #22c55e;
+  background: rgba(34,197,94,0.2);
+}
+.diff-btn.active {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  border-color: #22c55e;
+  color: #fff;
+}
+
+/* Developer Controls */
+.dev-controls {
+  background: rgba(59,130,246,0.1);
+  border: 2px dashed #3b82f6;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: none;
+}
+.dev-controls.show { display: block; }
+.dev-toggle {
+  text-align: right;
+  margin-bottom: 10px;
+}
+.dev-toggle button {
+  background: rgba(59,130,246,0.2);
+  border: 1px solid #3b82f6;
+  color: #60a5fa;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
   cursor: pointer;
 }
+.dev-toggle button:hover {
+  background: rgba(59,130,246,0.3);
+}
+.dev-controls h4 {
+  color: #60a5fa;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.dev-controls input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #3b82f6;
+  background: rgba(15,23,42,0.8);
+  color: #f1f5f9;
+  font-size: 13px;
+  margin: 5px 0;
+}
+.dev-controls button.apply-btn {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+}
+.mode-indicator {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+.mode-embedded {
+  background: rgba(34,197,94,0.2);
+  color: #22c55e;
+  border: 1px solid #22c55e;
+}
+.mode-url {
+  background: rgba(59,130,246,0.2);
+  color: #60a5fa;
+  border: 1px solid #3b82f6;
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -246,6 +399,26 @@ h1 {
   margin-bottom: 20px;
 }
 .hidden { display: none; }
+.unlock-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  font-size: 1.5rem;
+  font-weight: 700;
+  z-index: 1000;
+  animation: unlockPulse 0.6s ease-out;
+}
+@keyframes unlockPulse {
+  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.1); }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
 </style>
 </head>
 <body>
@@ -253,15 +426,62 @@ h1 {
 <div class="container">
   <h1>🌲 Tree & Fungi Trainer</h1>
 
-  <!-- Setup Banner (shows if not configured) -->
-  <div id="setupBanner" class="setup-banner">
-    <h3>📋 Setup Required</h3>
-    <p style="color: #fff; margin-bottom: 10px;">Enter your published Google Sheet CSV URL to connect the question database:</p>
-    <input type="text" id="sheetIdInput" placeholder="Paste your published CSV URL here (https://docs.google.com/spreadsheets/d/e/2PACX-...)" />
-    <p style="color: #e0f2fe; font-size: 12px; margin: 10px 0;">
-      Get this from: File → Share → Publish to web → Select "Comma-separated values (.csv)" → Copy the URL
-    </p>
-    <button onclick="saveSheetId()">Connect Sheet</button>
+  <!-- Developer Controls Toggle -->
+  <div class="dev-toggle">
+    <button onclick="toggleDevControls()">⚙️ Developer Mode</button>
+    <span class="mode-indicator mode-embedded" id="modeIndicator">📦 Embedded Data</span>
+  </div>
+
+  <!-- Developer Controls (Hidden by default) -->
+  <div id="devControls" class="dev-controls">
+    <h4>🔧 Developer: Load from URLs</h4>
+    <input type="text" id="urlLevel1" placeholder="Level 1 TSV URL">
+    <input type="text" id="urlLevel1Hard" placeholder="Level 1 Hard TSV URL">
+    <input type="text" id="urlLevel2" placeholder="Level 2 TSV URL">
+    <input type="text" id="urlLevel3" placeholder="Level 3 TSV URL">
+    <button class="apply-btn" onclick="loadFromUrls()">Apply URLs</button>
+    <button class="apply-btn" onclick="useEmbeddedData()" style="background: #22c55e;">Switch to Embedded Data</button>
+  </div>
+
+  <!-- Level Selection -->
+  <div class="level-selector">
+    <div class="level-card active" id="level1Card" onclick="selectLevel('level1')">
+      <div class="level-title">Level 1</div>
+      <div class="level-subtitle">Foundation Knowledge</div>
+      <div class="level-stats">
+        <span id="level1Questions">0 questions</span>
+        <span id="level1Accuracy">-</span>
+      </div>
+    </div>
+
+    <div class="level-card locked" id="level2Card" onclick="selectLevel('level2')">
+      <div class="level-title">Level 2</div>
+      <div class="level-subtitle">Advanced Practice</div>
+      <div class="level-stats">
+        <span id="level2Questions">0 questions</span>
+        <span id="level2Accuracy">-</span>
+      </div>
+      <div class="unlock-requirement">🔒 Score 70%+ on Level 1 to unlock</div>
+    </div>
+
+    <div class="level-card locked" id="level3Card" onclick="selectLevel('level3')">
+      <div class="level-title">Level 3</div>
+      <div class="level-subtitle">Professional Assessment</div>
+      <div class="level-stats">
+        <span id="level3Questions">0 questions</span>
+        <span id="level3Accuracy">-</span>
+      </div>
+      <div class="unlock-requirement">🔒 Score 75%+ on Level 2 to unlock</div>
+    </div>
+  </div>
+
+  <!-- Difficulty Toggle (Level 1 only) -->
+  <div id="difficultyToggle" class="difficulty-toggle show">
+    <label>Difficulty:</label>
+    <div class="difficulty-buttons">
+      <button class="diff-btn active" onclick="setDifficulty('standard')">Standard</button>
+      <button class="diff-btn" onclick="setDifficulty('hard')">Hard</button>
+    </div>
   </div>
 
   <!-- Stats Dashboard -->
@@ -290,8 +510,7 @@ h1 {
     <select id="categoryFilter">
       <option value="">All Categories</option>
     </select>
-    <button class="btn btn-secondary" onclick="loadQuestions()">🔄 Reload Questions</button>
-    <button class="btn btn-secondary" onclick="changeUrl()" style="margin-left: auto;">🔗 Change URL</button>
+    <button class="btn btn-secondary" onclick="resetStats()">🔄 Reset Level Stats</button>
   </div>
 
   <!-- Error Display -->
@@ -318,7 +537,6 @@ h1 {
         <button class="btn btn-primary" onclick="practiceQuestion()">🎯 Practice</button>
         <button class="btn btn-secondary" onclick="nextQuestion()">Next ➔</button>
         <button class="btn btn-secondary" onclick="practiceWeak()">💪 Weak Areas (<span id="weakCountBtn">0</span>)</button>
-        <button class="btn btn-secondary" onclick="resetStats()">🔄 Reset Stats</button>
       </div>
     </div>
   </div>
@@ -327,148 +545,413 @@ h1 {
 
 <script>
 // ============================================
+// EMBEDDED DATA - PASTE YOUR TSV DATA HERE
+// ============================================
+
+const EMBEDDED_DATA = {
+  level1: `/Level1.tsv',  
+  level1_hard: `/Level1_Hard.tsv`,
+  
+  level2: `/Level2.tsv`,
+  
+  level3: `pending`
+};
+
+// ============================================
 // STATE MANAGEMENT
 // ============================================
-let questions = [];
-let currentQuestion = null;
-let stats = {
-  attempted: 0,
-  correct: 0,
-  weak: new Set()
+let allQuestions = {
+  level1: [],
+  level1_hard: [],
+  level2: [],
+  level3: []
 };
+
+let currentLevel = 'level1';
+let currentDifficulty = 'standard'; // for level1
+let currentQuestion = null;
 let filteredQuestions = [];
+let dataMode = 'embedded'; // 'embedded' or 'url'
 
-// Load saved state
-const SHEET_ID_KEY = 'treeTrainerSheetId';
-const STATS_KEY = 'treeTrainerStats';
-const DEFAULT_TSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS_G_lHFyix5UAzmU4UZhlgTzX3T--lxPBO0eF_U53jNQEjSEs2Y3D4JPNKnO8eajyCSAtT1VPZMdFg/pub?output=tsv';
+let stats = {
+  level1: { attempted: 0, correct: 0, weak: new Set() },
+  level1_hard: { attempted: 0, correct: 0, weak: new Set() },
+  level2: { attempted: 0, correct: 0, weak: new Set() },
+  level3: { attempted: 0, correct: 0, weak: new Set() }
+};
 
+const STATS_KEY = 'treeTrainerStatsV2';
+const UNLOCK_KEY = 'treeTrainerUnlocks';
+const URL_KEY = 'treeTrainerUrls';
+
+// Unlock thresholds
+const UNLOCK_REQUIREMENTS = {
+  level2: { level: 'level1', threshold: 70 }, // 70% on any Level 1
+  level3: { level: 'level2', threshold: 75 }  // 75% on Level 2
+};
+
+// ============================================
+// INITIALIZATION
+// ============================================
+function init() {
+  loadStats();
+  loadUnlocks();
+  
+  // Check if URLs are saved
+  const savedUrls = localStorage.getItem(URL_KEY);
+  if (savedUrls) {
+    const urls = JSON.parse(savedUrls);
+    dataMode = 'url';
+    updateModeIndicator();
+    loadFromUrlsData(urls);
+  } else {
+    // Use embedded data
+    loadEmbeddedData();
+  }
+  
+  checkUnlocks();
+  updateLevelCards();
+  selectLevel('level1');
+}
+
+function loadEmbeddedData() {
+  dataMode = 'embedded';
+  updateModeIndicator();
+  
+  allQuestions.level1 = parseCSV(EMBEDDED_DATA.level1);
+  allQuestions.level1_hard = parseCSV(EMBEDDED_DATA.level1_hard);
+  allQuestions.level2 = parseCSV(EMBEDDED_DATA.level2);
+  allQuestions.level3 = parseCSV(EMBEDDED_DATA.level3);
+  
+  document.getElementById('loadingIndicator').classList.add('hidden');
+  document.getElementById('questionDisplay').classList.remove('hidden');
+  
+  updateLevelCards();
+  selectLevel(currentLevel);
+}
+
+async function loadFromUrls() {
+  const urls = {
+    level1: document.getElementById('urlLevel1').value.trim(),
+    level1_hard: document.getElementById('urlLevel1Hard').value.trim(),
+    level2: document.getElementById('urlLevel2').value.trim(),
+    level3: document.getElementById('urlLevel3').value.trim()
+  };
+  
+  // Validate at least one URL
+  if (!urls.level1 && !urls.level1_hard && !urls.level2 && !urls.level3) {
+    alert('Please enter at least one URL');
+    return;
+  }
+  
+  localStorage.setItem(URL_KEY, JSON.stringify(urls));
+  dataMode = 'url';
+  updateModeIndicator();
+  
+  await loadFromUrlsData(urls);
+}
+
+async function loadFromUrlsData(urls) {
+  document.getElementById('loadingIndicator').classList.remove('hidden');
+  document.getElementById('questionDisplay').classList.add('hidden');
+  
+  try {
+    const promises = [];
+    
+    if (urls.level1) {
+      promises.push(fetch(urls.level1).then(r => r.text()).then(text => {
+        allQuestions.level1 = parseCSV(text);
+      }));
+    }
+    
+    if (urls.level1_hard) {
+      promises.push(fetch(urls.level1_hard).then(r => r.text()).then(text => {
+        allQuestions.level1_hard = parseCSV(text);
+      }));
+    }
+    
+    if (urls.level2) {
+      promises.push(fetch(urls.level2).then(r => r.text()).then(text => {
+        allQuestions.level2 = parseCSV(text);
+      }));
+    }
+    
+    if (urls.level3) {
+      promises.push(fetch(urls.level3).then(r => r.text()).then(text => {
+        allQuestions.level3 = parseCSV(text);
+      }));
+    }
+    
+    await Promise.all(promises);
+    
+    document.getElementById('loadingIndicator').classList.add('hidden');
+    document.getElementById('questionDisplay').classList.remove('hidden');
+    
+    updateLevelCards();
+    selectLevel(currentLevel);
+    
+  } catch (error) {
+    showError('Failed to load from URLs: ' + error.message);
+  }
+}
+
+function useEmbeddedData() {
+  localStorage.removeItem(URL_KEY);
+  document.getElementById('urlLevel1').value = '';
+  document.getElementById('urlLevel1Hard').value = '';
+  document.getElementById('urlLevel2').value = '';
+  document.getElementById('urlLevel3').value = '';
+  loadEmbeddedData();
+}
+
+function toggleDevControls() {
+  const devControls = document.getElementById('devControls');
+  devControls.classList.toggle('show');
+}
+
+function updateModeIndicator() {
+  const indicator = document.getElementById('modeIndicator');
+  if (dataMode === 'embedded') {
+    indicator.className = 'mode-indicator mode-embedded';
+    indicator.textContent = '📦 Embedded Data';
+  } else {
+    indicator.className = 'mode-indicator mode-url';
+    indicator.textContent = '🔗 URL Data';
+  }
+}
+
+// ============================================
+// STATS & UNLOCKS
+// ============================================
 function loadStats() {
   const saved = localStorage.getItem(STATS_KEY);
   if (saved) {
     const parsed = JSON.parse(saved);
-    stats.attempted = parsed.attempted || 0;
-    stats.correct = parsed.correct || 0;
-    stats.weak = new Set(parsed.weak || []);
+    Object.keys(stats).forEach(level => {
+      if (parsed[level]) {
+        stats[level].attempted = parsed[level].attempted || 0;
+        stats[level].correct = parsed[level].correct || 0;
+        stats[level].weak = new Set(parsed[level].weak || []);
+      }
+    });
   }
 }
 
 function saveStats() {
-  localStorage.setItem(STATS_KEY, JSON.stringify({
-    attempted: stats.attempted,
-    correct: stats.correct,
-    weak: Array.from(stats.weak)
-  }));
+  const toSave = {};
+  Object.keys(stats).forEach(level => {
+    toSave[level] = {
+      attempted: stats[level].attempted,
+      correct: stats[level].correct,
+      weak: Array.from(stats[level].weak)
+    };
+  });
+  localStorage.setItem(STATS_KEY, JSON.stringify(toSave));
   updateStatsDisplay();
+  checkUnlocks();
+}
+
+function loadUnlocks() {
+  const saved = localStorage.getItem(UNLOCK_KEY);
+  if (saved) {
+    const unlocks = JSON.parse(saved);
+    return unlocks;
+  }
+  return { level1: true, level1_hard: true, level2: false, level3: false };
+}
+
+function saveUnlocks(unlocks) {
+  localStorage.setItem(UNLOCK_KEY, JSON.stringify(unlocks));
+}
+
+function checkUnlocks() {
+  const unlocks = loadUnlocks();
+  
+  // Check Level 2 unlock
+  const level1Accuracy = getAccuracy('level1');
+  const level1HardAccuracy = getAccuracy('level1_hard');
+  const bestLevel1Accuracy = Math.max(level1Accuracy, level1HardAccuracy);
+  
+  if (bestLevel1Accuracy >= UNLOCK_REQUIREMENTS.level2.threshold && !unlocks.level2) {
+    unlocks.level2 = true;
+    saveUnlocks(unlocks);
+    showUnlockToast('🎉 Level 2 Unlocked!');
+  }
+  
+  // Check Level 3 unlock
+  const level2Accuracy = getAccuracy('level2');
+  if (level2Accuracy >= UNLOCK_REQUIREMENTS.level3.threshold && !unlocks.level3) {
+    unlocks.level3 = true;
+    saveUnlocks(unlocks);
+    showUnlockToast('🎉 Level 3 Unlocked!');
+  }
+  
+  updateLevelCards();
+}
+
+function showUnlockToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'unlock-toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
+
+function getAccuracy(level) {
+  if (stats[level].attempted === 0) return 0;
+  return Math.round((stats[level].correct / stats[level].attempted) * 100);
 }
 
 function updateStatsDisplay() {
-  document.getElementById('totalQuestions').textContent = filteredQuestions.length || questions.length;
-  document.getElementById('attempted').textContent = stats.attempted;
-  document.getElementById('weakCount').textContent = stats.weak.size;
-  document.getElementById('weakCountBtn').textContent = stats.weak.size;
+  const levelKey = currentLevel === 'level1' && currentDifficulty === 'hard' ? 'level1_hard' : currentLevel;
+  const currentStats = stats[levelKey];
   
-  const accuracy = stats.attempted > 0 ? Math.round((stats.correct / stats.attempted) * 100) : 0;
-  document.getElementById('accuracy').textContent = stats.attempted > 0 ? accuracy + '%' : '-';
+  document.getElementById('totalQuestions').textContent = filteredQuestions.length;
+  document.getElementById('attempted').textContent = currentStats.attempted;
+  document.getElementById('weakCount').textContent = currentStats.weak.size;
+  document.getElementById('weakCountBtn').textContent = currentStats.weak.size;
+  
+  const accuracy = getAccuracy(levelKey);
+  document.getElementById('accuracy').textContent = currentStats.attempted > 0 ? accuracy + '%' : '-';
+}
+
+function updateLevelCards() {
+  const unlocks = loadUnlocks();
+  
+  // Level 1
+  const level1Total = allQuestions.level1.length + allQuestions.level1_hard.length;
+  document.getElementById('level1Questions').textContent = `${level1Total} questions`;
+  const level1Acc = Math.max(getAccuracy('level1'), getAccuracy('level1_hard'));
+  document.getElementById('level1Accuracy').textContent = level1Acc > 0 ? level1Acc + '%' : '-';
+  
+  // Level 2
+  document.getElementById('level2Questions').textContent = `${allQuestions.level2.length} questions`;
+  const level2Acc = getAccuracy('level2');
+  document.getElementById('level2Accuracy').textContent = level2Acc > 0 ? level2Acc + '%' : '-';
+  
+  const level2Card = document.getElementById('level2Card');
+  if (unlocks.level2) {
+    level2Card.classList.remove('locked');
+  } else {
+    level2Card.classList.add('locked');
+  }
+  
+  // Level 3
+  document.getElementById('level3Questions').textContent = `${allQuestions.level3.length} questions`;
+  const level3Acc = getAccuracy('level3');
+  document.getElementById('level3Accuracy').textContent = level3Acc > 0 ? level3Acc + '%' : '-';
+  
+  const level3Card = document.getElementById('level3Card');
+  if (unlocks.level3) {
+    level3Card.classList.remove('locked');
+  } else {
+    level3Card.classList.add('locked');
+  }
 }
 
 // ============================================
-// GOOGLE SHEETS CONNECTION
+// LEVEL & DIFFICULTY SELECTION
 // ============================================
-function saveSheetId() {
-  const input = document.getElementById('sheetIdInput');
-  const csvUrl = input.value.trim();
+function selectLevel(level) {
+  const unlocks = loadUnlocks();
   
-  if (!csvUrl) {
-    alert('Please enter a CSV URL');
+  // Check if level is locked
+  if (!unlocks[level]) {
     return;
   }
   
-  // Basic validation
-  if (!csvUrl.includes('docs.google.com')) {
-    alert('Please enter a valid Google Sheets published CSV URL');
-    return;
+  currentLevel = level;
+  
+  // Update active state on cards
+  document.querySelectorAll('.level-card').forEach(card => {
+    card.classList.remove('active');
+  });
+  document.getElementById(level + 'Card').classList.add('active');
+  
+  // Show/hide difficulty toggle for Level 1
+  if (level === 'level1') {
+    document.getElementById('difficultyToggle').classList.add('show');
+  } else {
+    document.getElementById('difficultyToggle').classList.remove('show');
+    currentDifficulty = 'standard'; // Reset difficulty when leaving L1
   }
   
-  localStorage.setItem(SHEET_ID_KEY, csvUrl);
-  document.getElementById('setupBanner').classList.add('hidden');
-  loadQuestions();
+  loadCurrentLevel();
 }
 
-function checkSetup() {
-  let csvUrl = localStorage.getItem(SHEET_ID_KEY);
+function setDifficulty(difficulty) {
+  currentDifficulty = difficulty;
   
-  // If no saved URL, use the default
-  if (!csvUrl) {
-    csvUrl = DEFAULT_TSV_URL;
-    localStorage.setItem(SHEET_ID_KEY, csvUrl);
+  // Update button states
+  document.querySelectorAll('.diff-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  loadCurrentLevel();
+}
+
+function loadCurrentLevel() {
+  let questions = [];
+  
+  if (currentLevel === 'level1') {
+    questions = currentDifficulty === 'standard' ? allQuestions.level1 : allQuestions.level1_hard;
+  } else {
+    questions = allQuestions[currentLevel];
   }
   
-  document.getElementById('setupBanner').classList.add('hidden');
-  return true;
-}
-
-function changeUrl() {
-  localStorage.removeItem(SHEET_ID_KEY);
-  document.getElementById('setupBanner').classList.remove('hidden');
-  document.getElementById('questionDisplay').classList.add('hidden');
-  document.getElementById('sheetIdInput').value = '';
-  document.getElementById('sheetIdInput').focus();
-}
-
-async function loadQuestions() {
-  const csvUrl = localStorage.getItem(SHEET_ID_KEY);
-  if (!csvUrl) {
-    checkSetup();
-    return;
-  }
+  // Filter active questions
+  questions = questions.filter(q => q.active === 'YES');
   
-  document.getElementById('loadingIndicator').classList.remove('hidden');
-  document.getElementById('questionDisplay').classList.add('hidden');
-  document.getElementById('errorDisplay').classList.add('hidden');
+  buildCategoryFilter(questions);
+  filterQuestions(questions);
   
-  try {
-    // Use the published CSV URL directly
-    const response = await fetch(csvUrl);
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch. Check your CSV URL and sharing settings.');
-    }
-    
-    const csvText = await response.text();
-    questions = parseCSV(csvText);
-    
-    // Filter active questions only
-    questions = questions.filter(q => q.active === 'YES');
-    
-    if (questions.length === 0) {
-      throw new Error('No active questions found in sheet');
-    }
-    
-    buildCategoryFilter();
-    filterQuestions();
-    
-    document.getElementById('loadingIndicator').classList.add('hidden');
-    document.getElementById('questionDisplay').classList.remove('hidden');
-    updateStatsDisplay();
-    
-  } catch (error) {
-    document.getElementById('loadingIndicator').classList.add('hidden');
-    showError(error.message);
-  }
+  updateStatsDisplay();
 }
 
+function buildCategoryFilter(questions) {
+  const categories = [...new Set(questions.map(q => q.category))].sort();
+  const select = document.getElementById('categoryFilter');
+  
+  select.innerHTML = '<option value="">All Categories</option>';
+  categories.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat;
+    option.textContent = cat;
+    select.appendChild(option);
+  });
+  
+  select.onchange = () => {
+    const allLevelQuestions = currentLevel === 'level1' 
+      ? (currentDifficulty === 'standard' ? allQuestions.level1 : allQuestions.level1_hard)
+      : allQuestions[currentLevel];
+    filterQuestions(allLevelQuestions.filter(q => q.active === 'YES'));
+  };
+}
+
+function filterQuestions(questions) {
+  const category = document.getElementById('categoryFilter').value;
+  filteredQuestions = category 
+    ? questions.filter(q => q.category === category)
+    : [...questions];
+  updateStatsDisplay();
+}
+
+// ============================================
+// CSV PARSING
+// ============================================
 function parseCSV(csv) {
   const lines = csv.split('\n');
-  
   const result = [];
+  
   for (let i = 1; i < lines.length; i++) {
     if (!lines[i].trim()) continue;
     
-    // Split on TAB for TSV format
     const parts = lines[i].split('\t');
-    
-    if (parts.length < 14) continue; // Need all 14 columns
+    if (parts.length < 14) continue;
     
     const question = {
       id: parseInt(parts[0]),
@@ -493,40 +976,11 @@ function parseCSV(csv) {
   return result;
 }
 
-function buildCategoryFilter() {
-  const categories = [...new Set(questions.map(q => q.category))].sort();
-  const select = document.getElementById('categoryFilter');
-  
-  select.innerHTML = '<option value="">All Categories</option>';
-  categories.forEach(cat => {
-    const option = document.createElement('option');
-    option.value = cat;
-    option.textContent = cat;
-    select.appendChild(option);
-  });
-  
-  select.onchange = filterQuestions;
-}
-
-function filterQuestions() {
-  const category = document.getElementById('categoryFilter').value;
-  filteredQuestions = category 
-    ? questions.filter(q => q.category === category)
-    : [...questions];
-  updateStatsDisplay();
-}
-
-function showError(message) {
-  const errorDiv = document.getElementById('errorDisplay');
-  errorDiv.textContent = '⚠ Error: ' + message;
-  errorDiv.classList.remove('hidden');
-}
-
 // ============================================
 // QUESTION DISPLAY
 // ============================================
 function practiceQuestion() {
-  const pool = filteredQuestions.length > 0 ? filteredQuestions : questions;
+  const pool = filteredQuestions.length > 0 ? filteredQuestions : getCurrentQuestions();
   if (pool.length === 0) {
     alert('No questions available');
     return;
@@ -541,7 +995,10 @@ function nextQuestion() {
 }
 
 function practiceWeak() {
-  const weakQuestions = questions.filter(q => stats.weak.has(q.id));
+  const levelKey = currentLevel === 'level1' && currentDifficulty === 'hard' ? 'level1_hard' : currentLevel;
+  const allLevelQuestions = getCurrentQuestions();
+  const weakQuestions = allLevelQuestions.filter(q => stats[levelKey].weak.has(q.id));
+  
   if (weakQuestions.length === 0) {
     alert('No weak areas yet. Answer questions incorrectly to add them here for review.');
     return;
@@ -551,30 +1008,20 @@ function practiceWeak() {
   displayQuestion(currentQuestion);
 }
 
+function getCurrentQuestions() {
+  if (currentLevel === 'level1') {
+    return currentDifficulty === 'standard' ? allQuestions.level1 : allQuestions.level1_hard;
+  }
+  return allQuestions[currentLevel];
+}
+
 function displayQuestion(q) {
-  // Clear previous state
   document.getElementById('explanation').classList.remove('show');
   
-  // Show image if available (FIXED IMAGE LOADING)
+  // Show image if available
   const imageContainer = document.getElementById('imageContainer');
-  if (q.imageRef && q.imageRef.trim() !== '') {
-    // Determine level based on question ID
-    const level = q.id <= 60 ? 'level1' : 'level2';
-    
-    // Build full GitHub Pages URL (handles .svg, .jpg, .png)
-    let imageUrl;
-    if (q.imageRef.startsWith('http')) {
-      // Already a full URL
-      imageUrl = q.imageRef;
-    } else if (q.imageRef.includes('/')) {
-      // Relative path like "level2/041"
-      imageUrl = `https://joeycost27.github.io/pti-trainer/images/${q.imageRef}.svg`;
-    } else {
-      // Just filename like "041"
-      imageUrl = `https://joeycost27.github.io/pti-trainer/images/${level}/${q.imageRef}.svg`;
-    }
-    
-    imageContainer.innerHTML = `<img src="${imageUrl}" alt="Question ${q.id}" onerror="this.parentElement.classList.add('hidden')">`;
+  if (q.imageRef) {
+    imageContainer.innerHTML = `<img src="images/${q.imageRef}.jpg" alt="Question ${q.id}" onerror="this.parentElement.classList.add('hidden')">`;
     imageContainer.classList.remove('hidden');
   } else {
     imageContainer.classList.add('hidden');
@@ -582,7 +1029,11 @@ function displayQuestion(q) {
   
   // Display question
   document.getElementById('questionText').textContent = q.question;
-  document.getElementById('metaInfo').textContent = `Category: ${q.category} | Question ${q.id}`;
+  
+  const levelDisplay = currentLevel === 'level1' 
+    ? `Level 1 (${currentDifficulty === 'standard' ? 'Standard' : 'Hard'})` 
+    : `Level ${currentLevel.replace('level', '')}`;
+  document.getElementById('metaInfo').textContent = `${levelDisplay} | ${q.category} | Question ${q.id}`;
   
   // Shuffle options
   const options = [
@@ -592,7 +1043,6 @@ function displayQuestion(q) {
     { text: q.optionD, index: 3 }
   ];
   
-  // Fisher-Yates shuffle
   for (let i = options.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [options[i], options[j]] = [options[j], options[i]];
@@ -614,29 +1064,27 @@ function displayQuestion(q) {
 }
 
 function handleAnswer(q, displayIndex) {
+  const levelKey = currentLevel === 'level1' && currentDifficulty === 'hard' ? 'level1_hard' : currentLevel;
   const options = document.querySelectorAll('.option');
   const selectedOption = q._shuffledOptions[displayIndex];
   const correctOption = q._shuffledOptions.find(opt => opt.index === q.correctAnswer);
   const correctDisplayIndex = q._shuffledOptions.indexOf(correctOption);
   
-  // Disable all options
   options.forEach(opt => {
     opt.onclick = null;
     opt.classList.add('disabled');
   });
   
-  // Update stats
-  stats.attempted++;
+  stats[levelKey].attempted++;
   
-  // Show result
   if (selectedOption.index === q.correctAnswer) {
     options[displayIndex].classList.add('correct');
-    stats.correct++;
+    stats[levelKey].correct++;
     showExplanation(q, true);
   } else {
     options[displayIndex].classList.add('wrong');
     options[correctDisplayIndex].classList.add('correct');
-    stats.weak.add(q.id);
+    stats[levelKey].weak.add(q.id);
     showExplanation(q, false);
   }
   
@@ -654,11 +1102,13 @@ function showExplanation(q, isCorrect) {
   html += `<p><strong>Why It Matters:</strong> ${q.whyMatters}</p>`;
   
   if (q.deepDive) {
-    html += `<details><summary>📖 Deep Dive</summary><div style="margin-top: 12px;">${q.deepDive}</div></details>`;
+    // Handle <br> tags in deepDive
+    const formattedDeepDive = q.deepDive.replace(/<br>/g, '<br>');
+    html += `<details><summary>📖 Deep Dive</summary><div style="margin-top: 12px;">${formattedDeepDive}</div></details>`;
   }
   
   if (q.notes) {
-    html += `<details><summary>📝 Personal Notes</summary><div style="margin-top: 12px;">${q.notes}</div></details>`;
+    html += `<details><summary>📝 Notes</summary><div style="margin-top: 12px;">${q.notes}</div></details>`;
   }
   
   explanation.innerHTML = html;
@@ -666,20 +1116,26 @@ function showExplanation(q, isCorrect) {
 }
 
 function resetStats() {
-  if (confirm('Reset all progress? This will clear your stats and weak areas.')) {
-    stats = { attempted: 0, correct: 0, weak: new Set() };
+  const levelKey = currentLevel === 'level1' && currentDifficulty === 'hard' ? 'level1_hard' : currentLevel;
+  const levelName = currentLevel === 'level1' 
+    ? `Level 1 (${currentDifficulty === 'standard' ? 'Standard' : 'Hard'})` 
+    : `Level ${currentLevel.replace('level', '')}`;
+  
+  if (confirm(`Reset all progress for ${levelName}? This will clear stats and weak areas for this level only.`)) {
+    stats[levelKey] = { attempted: 0, correct: 0, weak: new Set() };
     saveStats();
-    alert('✅ Stats reset');
+    alert('✅ Level stats reset');
   }
 }
 
-// ============================================
-// INITIALIZATION
-// ============================================
-loadStats();
-if (checkSetup()) {
-  loadQuestions();
+function showError(message) {
+  const errorDiv = document.getElementById('errorDisplay');
+  errorDiv.textContent = '⚠ Error: ' + message;
+  errorDiv.classList.remove('hidden');
 }
+
+// Initialize on load
+init();
 </script>
 
 </body>
