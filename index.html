@@ -545,15 +545,13 @@ h1 {
 
 <script>
 // ============================================
-// EMBEDDED DATA - PASTE YOUR TSV DATA HERE
+// EMBEDDED DATA - UPDATE YOUR FILE PATHS HERE
 // ============================================
 
 const EMBEDDED_DATA = {
-  level1: `/Level1.tsv`,  
-  level1_hard: `/Level1_Hard.tsv`,
-  
-  level2: `/Level2.tsv`,
-  
+  level1: `/tsv/Level1.tsv`,
+  level1_hard: `/tsv/Level1_Hard.tsv`,
+  level2: `/tsv/Level2.tsv`,
   level3: `pending`
 };
 
@@ -568,10 +566,10 @@ let allQuestions = {
 };
 
 let currentLevel = 'level1';
-let currentDifficulty = 'standard'; // for level1
+let currentDifficulty = 'standard';
 let currentQuestion = null;
 let filteredQuestions = [];
-let dataMode = 'embedded'; // 'embedded' or 'url'
+let dataMode = 'embedded';
 
 let stats = {
   level1: { attempted: 0, correct: 0, weak: new Set() },
@@ -584,10 +582,9 @@ const STATS_KEY = 'treeTrainerStatsV2';
 const UNLOCK_KEY = 'treeTrainerUnlocks';
 const URL_KEY = 'treeTrainerUrls';
 
-// Unlock thresholds
 const UNLOCK_REQUIREMENTS = {
-  level2: { level: 'level1', threshold: 70 }, // 70% on any Level 1
-  level3: { level: 'level2', threshold: 75 }  // 75% on Level 2
+  level2: { level: 'level1', threshold: 70 },
+  level3: { level: 'level2', threshold: 75 }
 };
 
 // ============================================
@@ -597,7 +594,6 @@ function init() {
   loadStats();
   loadUnlocks();
   
-  // Check if URLs are saved
   const savedUrls = localStorage.getItem(URL_KEY);
   if (savedUrls) {
     const urls = JSON.parse(savedUrls);
@@ -605,7 +601,6 @@ function init() {
     updateModeIndicator();
     loadFromUrlsData(urls);
   } else {
-    // Use embedded data
     loadEmbeddedData();
   }
   
@@ -614,20 +609,80 @@ function init() {
   selectLevel('level1');
 }
 
-function loadEmbeddedData() {
+async function loadEmbeddedData() {
   dataMode = 'embedded';
   updateModeIndicator();
   
-  allQuestions.level1 = parseCSV(EMBEDDED_DATA.level1);
-  allQuestions.level1_hard = parseCSV(EMBEDDED_DATA.level1_hard);
-  allQuestions.level2 = parseCSV(EMBEDDED_DATA.level2);
-  allQuestions.level3 = parseCSV(EMBEDDED_DATA.level3);
+  document.getElementById('loadingIndicator').classList.remove('hidden');
+  document.getElementById('questionDisplay').classList.add('hidden');
   
-  document.getElementById('loadingIndicator').classList.add('hidden');
-  document.getElementById('questionDisplay').classList.remove('hidden');
-  
-  updateLevelCards();
-  selectLevel(currentLevel);
+  try {
+    const promises = [];
+    
+    // Level 1 Standard
+    if (EMBEDDED_DATA.level1 && EMBEDDED_DATA.level1 !== 'pending') {
+      if (EMBEDDED_DATA.level1.includes('.tsv') || EMBEDDED_DATA.level1.startsWith('/') || EMBEDDED_DATA.level1.startsWith('./')) {
+        promises.push(
+          fetch(EMBEDDED_DATA.level1)
+            .then(r => r.text())
+            .then(text => { allQuestions.level1 = parseCSV(text); })
+        );
+      } else {
+        allQuestions.level1 = parseCSV(EMBEDDED_DATA.level1);
+      }
+    }
+    
+    // Level 1 Hard
+    if (EMBEDDED_DATA.level1_hard && EMBEDDED_DATA.level1_hard !== 'pending') {
+      if (EMBEDDED_DATA.level1_hard.includes('.tsv') || EMBEDDED_DATA.level1_hard.startsWith('/') || EMBEDDED_DATA.level1_hard.startsWith('./')) {
+        promises.push(
+          fetch(EMBEDDED_DATA.level1_hard)
+            .then(r => r.text())
+            .then(text => { allQuestions.level1_hard = parseCSV(text); })
+        );
+      } else {
+        allQuestions.level1_hard = parseCSV(EMBEDDED_DATA.level1_hard);
+      }
+    }
+    
+    // Level 2
+    if (EMBEDDED_DATA.level2 && EMBEDDED_DATA.level2 !== 'pending') {
+      if (EMBEDDED_DATA.level2.includes('.tsv') || EMBEDDED_DATA.level2.startsWith('/') || EMBEDDED_DATA.level2.startsWith('./')) {
+        promises.push(
+          fetch(EMBEDDED_DATA.level2)
+            .then(r => r.text())
+            .then(text => { allQuestions.level2 = parseCSV(text); })
+        );
+      } else {
+        allQuestions.level2 = parseCSV(EMBEDDED_DATA.level2);
+      }
+    }
+    
+    // Level 3
+    if (EMBEDDED_DATA.level3 && EMBEDDED_DATA.level3 !== 'pending') {
+      if (EMBEDDED_DATA.level3.includes('.tsv') || EMBEDDED_DATA.level3.startsWith('/') || EMBEDDED_DATA.level3.startsWith('./')) {
+        promises.push(
+          fetch(EMBEDDED_DATA.level3)
+            .then(r => r.text())
+            .then(text => { allQuestions.level3 = parseCSV(text); })
+        );
+      } else {
+        allQuestions.level3 = parseCSV(EMBEDDED_DATA.level3);
+      }
+    }
+    
+    await Promise.all(promises);
+    
+    document.getElementById('loadingIndicator').classList.add('hidden');
+    document.getElementById('questionDisplay').classList.remove('hidden');
+    
+    updateLevelCards();
+    selectLevel(currentLevel);
+    
+  } catch (error) {
+    showError('Failed to load embedded data: ' + error.message);
+    document.getElementById('loadingIndicator').classList.add('hidden');
+  }
 }
 
 async function loadFromUrls() {
@@ -638,7 +693,6 @@ async function loadFromUrls() {
     level3: document.getElementById('urlLevel3').value.trim()
   };
   
-  // Validate at least one URL
   if (!urls.level1 && !urls.level1_hard && !urls.level2 && !urls.level3) {
     alert('Please enter at least one URL');
     return;
@@ -767,7 +821,6 @@ function saveUnlocks(unlocks) {
 function checkUnlocks() {
   const unlocks = loadUnlocks();
   
-  // Check Level 2 unlock
   const level1Accuracy = getAccuracy('level1');
   const level1HardAccuracy = getAccuracy('level1_hard');
   const bestLevel1Accuracy = Math.max(level1Accuracy, level1HardAccuracy);
@@ -778,7 +831,6 @@ function checkUnlocks() {
     showUnlockToast('🎉 Level 2 Unlocked!');
   }
   
-  // Check Level 3 unlock
   const level2Accuracy = getAccuracy('level2');
   if (level2Accuracy >= UNLOCK_REQUIREMENTS.level3.threshold && !unlocks.level3) {
     unlocks.level3 = true;
@@ -821,13 +873,11 @@ function updateStatsDisplay() {
 function updateLevelCards() {
   const unlocks = loadUnlocks();
   
-  // Level 1
   const level1Total = allQuestions.level1.length + allQuestions.level1_hard.length;
   document.getElementById('level1Questions').textContent = `${level1Total} questions`;
   const level1Acc = Math.max(getAccuracy('level1'), getAccuracy('level1_hard'));
   document.getElementById('level1Accuracy').textContent = level1Acc > 0 ? level1Acc + '%' : '-';
   
-  // Level 2
   document.getElementById('level2Questions').textContent = `${allQuestions.level2.length} questions`;
   const level2Acc = getAccuracy('level2');
   document.getElementById('level2Accuracy').textContent = level2Acc > 0 ? level2Acc + '%' : '-';
@@ -839,7 +889,6 @@ function updateLevelCards() {
     level2Card.classList.add('locked');
   }
   
-  // Level 3
   document.getElementById('level3Questions').textContent = `${allQuestions.level3.length} questions`;
   const level3Acc = getAccuracy('level3');
   document.getElementById('level3Accuracy').textContent = level3Acc > 0 ? level3Acc + '%' : '-';
@@ -858,25 +907,22 @@ function updateLevelCards() {
 function selectLevel(level) {
   const unlocks = loadUnlocks();
   
-  // Check if level is locked
   if (!unlocks[level]) {
     return;
   }
   
   currentLevel = level;
   
-  // Update active state on cards
   document.querySelectorAll('.level-card').forEach(card => {
     card.classList.remove('active');
   });
   document.getElementById(level + 'Card').classList.add('active');
   
-  // Show/hide difficulty toggle for Level 1
   if (level === 'level1') {
     document.getElementById('difficultyToggle').classList.add('show');
   } else {
     document.getElementById('difficultyToggle').classList.remove('show');
-    currentDifficulty = 'standard'; // Reset difficulty when leaving L1
+    currentDifficulty = 'standard';
   }
   
   loadCurrentLevel();
@@ -885,7 +931,6 @@ function selectLevel(level) {
 function setDifficulty(difficulty) {
   currentDifficulty = difficulty;
   
-  // Update button states
   document.querySelectorAll('.diff-btn').forEach(btn => {
     btn.classList.remove('active');
   });
@@ -903,7 +948,6 @@ function loadCurrentLevel() {
     questions = allQuestions[currentLevel];
   }
   
-  // Filter active questions
   questions = questions.filter(q => q.active === 'YES');
   
   buildCategoryFilter(questions);
@@ -1018,7 +1062,6 @@ function getCurrentQuestions() {
 function displayQuestion(q) {
   document.getElementById('explanation').classList.remove('show');
   
-  // Show image if available
   const imageContainer = document.getElementById('imageContainer');
   if (q.imageRef) {
     imageContainer.innerHTML = `<img src="images/${q.imageRef}.jpg" alt="Question ${q.id}" onerror="this.parentElement.classList.add('hidden')">`;
@@ -1027,7 +1070,6 @@ function displayQuestion(q) {
     imageContainer.classList.add('hidden');
   }
   
-  // Display question
   document.getElementById('questionText').textContent = q.question;
   
   const levelDisplay = currentLevel === 'level1' 
@@ -1035,7 +1077,6 @@ function displayQuestion(q) {
     : `Level ${currentLevel.replace('level', '')}`;
   document.getElementById('metaInfo').textContent = `${levelDisplay} | ${q.category} | Question ${q.id}`;
   
-  // Shuffle options
   const options = [
     { text: q.optionA, index: 0 },
     { text: q.optionB, index: 1 },
@@ -1050,7 +1091,6 @@ function displayQuestion(q) {
   
   q._shuffledOptions = options;
   
-  // Render options
   const container = document.getElementById('optionsContainer');
   container.innerHTML = '';
   
@@ -1102,7 +1142,6 @@ function showExplanation(q, isCorrect) {
   html += `<p><strong>Why It Matters:</strong> ${q.whyMatters}</p>`;
   
   if (q.deepDive) {
-    // Handle <br> tags in deepDive
     const formattedDeepDive = q.deepDive.replace(/<br>/g, '<br>');
     html += `<details><summary>📖 Deep Dive</summary><div style="margin-top: 12px;">${formattedDeepDive}</div></details>`;
   }
@@ -1134,7 +1173,6 @@ function showError(message) {
   errorDiv.classList.remove('hidden');
 }
 
-// Initialize on load
 init();
 </script>
 
