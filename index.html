@@ -821,18 +821,27 @@ function saveUnlocks(unlocks) {
 function checkUnlocks() {
   const unlocks = loadUnlocks();
   
+  // Check Level 2 unlock
   const level1Accuracy = getAccuracy('level1');
   const level1HardAccuracy = getAccuracy('level1_hard');
   const bestLevel1Accuracy = Math.max(level1Accuracy, level1HardAccuracy);
+  const level1Attempts = stats.level1.attempted + stats.level1_hard.attempted;
   
-  if (bestLevel1Accuracy >= UNLOCK_REQUIREMENTS.level2.threshold && !unlocks.level2) {
+  if (bestLevel1Accuracy >= UNLOCK_REQUIREMENTS.level2.threshold && 
+      level1Attempts >= UNLOCK_REQUIREMENTS.level2.minAttempts && 
+      !unlocks.level2) {
     unlocks.level2 = true;
     saveUnlocks(unlocks);
     showUnlockToast('🎉 Level 2 Unlocked!');
   }
   
+  // Check Level 3 unlock
   const level2Accuracy = getAccuracy('level2');
-  if (level2Accuracy >= UNLOCK_REQUIREMENTS.level3.threshold && !unlocks.level3) {
+  const level2Attempts = stats.level2.attempted;
+  
+  if (level2Accuracy >= UNLOCK_REQUIREMENTS.level3.threshold && 
+      level2Attempts >= UNLOCK_REQUIREMENTS.level3.minAttempts && 
+      !unlocks.level3) {
     unlocks.level3 = true;
     saveUnlocks(unlocks);
     showUnlockToast('🎉 Level 3 Unlocked!');
@@ -900,6 +909,7 @@ function updateLevelCards() {
     level3Card.classList.add('locked');
   }
 }
+
 
 // ============================================
 // LEVEL & DIFFICULTY SELECTION
