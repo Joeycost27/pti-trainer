@@ -461,7 +461,7 @@ h1 {
         <span id="level2Questions">0 questions</span>
         <span id="level2Accuracy">-</span>
       </div>
-      <div class="unlock-requirement">🔒 Score 70%+ on Level 1 to unlock</div>
+      <div class="unlock-requirement">🔒 Score 70%+ on 100+ Level 1 questions to unlock</div>
     </div>
 
     <div class="level-card locked" id="level3Card" onclick="selectLevel('level3')">
@@ -471,7 +471,7 @@ h1 {
         <span id="level3Questions">0 questions</span>
         <span id="level3Accuracy">-</span>
       </div>
-      <div class="unlock-requirement">🔒 Score 75%+ on Level 2 to unlock</div>
+      <div class="unlock-requirement">🔒 Score 75%+ on 100+ Level 2 questions to unlock</div>
     </div>
   </div>
 
@@ -549,9 +549,9 @@ h1 {
 // ============================================
 
 const EMBEDDED_DATA = {
-  level1: tsv/Level1.tsv,
-  level1_hard: tsv/Level1_Hard.tsv,
-  level2: tsv/Level2.tsv,
+  level1: `/tsv/Level1.tsv`,
+  level1_hard: `/tsv/Level1_Hard.tsv`,
+  level2: `/tsv/Level2.tsv`,
   level3: `pending`
 };
 
@@ -583,8 +583,8 @@ const UNLOCK_KEY = 'treeTrainerUnlocks';
 const URL_KEY = 'treeTrainerUrls';
 
 const UNLOCK_REQUIREMENTS = {
-  level2: { level: 'level1', threshold: 70 },
-  level3: { level: 'level2', threshold: 75 }
+  level2: { level: 'level1', threshold: 70, minAttempts: 100 },
+  level3: { level: 'level2', threshold: 75, minAttempts: 100 }
 };
 
 // ============================================
@@ -806,38 +806,51 @@ function saveStats() {
 }
 
 function loadUnlocks() {
-  const saved = localStorage.getItem(UNLOCK_KEY);
-  if (saved) {
-    const unlocks = JSON.parse(saved);
-    return unlocks;
-  }
-  return { level1: true, level1_hard: true, level2: false, level3: false };
-}
-
-function saveUnlocks(unlocks) {
-  localStorage.setItem(UNLOCK_KEY, JSON.stringify(unlocks));
-}
-
-function checkUnlocks() {
-  const unlocks = loadUnlocks();
+  // Always calculate unlocks dynamically from stats - don't cache the locked state
+  const unlocks = { level1: true, level1_hard: true, level2: false, level3: false };
   
+  // Check if previously shown toast for level 2
+  const shownToasts = JSON.parse(localStorage.getItem('treeTrainerToastsShown') || '{}');
+  
+  // Check Level 2 unlock
   const level1Accuracy = getAccuracy('level1');
   const level1HardAccuracy = getAccuracy('level1_hard');
   const bestLevel1Accuracy = Math.max(level1Accuracy, level1HardAccuracy);
+  const level1Attempts = stats.level1.attempted + stats.level1_hard.attempted;
   
-  if (bestLevel1Accuracy >= UNLOCK_REQUIREMENTS.level2.threshold && !unlocks.level2) {
+  if (bestLevel1Accuracy >= UNLOCK_REQUIREMENTS.level2.threshold && 
+      level1Attempts >= UNLOCK_REQUIREMENTS.level2.minAttempts) {
     unlocks.level2 = true;
-    saveUnlocks(unlocks);
-    showUnlockToast('🎉 Level 2 Unlocked!');
+    
+    // Show toast only once
+    if (!shownToasts.level2) {
+      showUnlockToast('🎉 Level 2 Unlocked!');
+      shownToasts.level2 = true;
+      localStorage.setItem('treeTrainerToastsShown', JSON.stringify(shownToasts));
+    }
   }
   
+  // Check Level 3 unlock
   const level2Accuracy = getAccuracy('level2');
-  if (level2Accuracy >= UNLOCK_REQUIREMENTS.level3.threshold && !unlocks.level3) {
+  const level2Attempts = stats.level2.attempted;
+  
+  if (level2Accuracy >= UNLOCK_REQUIREMENTS.level3.threshold && 
+      level2Attempts >= UNLOCK_REQUIREMENTS.level3.minAttempts) {
     unlocks.level3 = true;
-    saveUnlocks(unlocks);
-    showUnlockToast('🎉 Level 3 Unlocked!');
+    
+    // Show toast only once
+    if (!shownToasts.level3) {
+      showUnlockToast('🎉 Level 3 Unlocked!');
+      shownToasts.level3 = true;
+      localStorage.setItem('treeTrainerToastsShown', JSON.stringify(shownToasts));
+    }
   }
   
+  return unlocks;
+}
+
+function checkUnlocks() {
+  // Just trigger an update - loadUnlocks() does the actual checking now
   updateLevelCards();
 }
 
