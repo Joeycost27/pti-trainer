@@ -59,6 +59,10 @@ h1 {
   right: 10px;
   font-size: 24px;
 }
+.level-card.dev-unlocked::after {
+  content: '🔓';
+  color: #3b82f6;
+}
 .level-title {
   font-size: 1.3rem;
   font-weight: 700;
@@ -179,6 +183,10 @@ h1 {
   cursor: pointer;
   font-weight: 600;
   margin-top: 10px;
+  margin-right: 10px;
+}
+.dev-controls button.apply-btn:hover {
+  background: #2563eb;
 }
 .mode-indicator {
   display: inline-block;
@@ -197,6 +205,11 @@ h1 {
   background: rgba(59,130,246,0.2);
   color: #60a5fa;
   border: 1px solid #3b82f6;
+}
+.mode-dev {
+  background: rgba(168,85,247,0.2);
+  color: #a855f7;
+  border: 1px solid #a855f7;
 }
 
 .stats {
@@ -434,7 +447,16 @@ h1 {
 
   <!-- Developer Controls (Hidden by default) -->
   <div id="devControls" class="dev-controls">
-    <h4>🔧 Developer: Load from URLs</h4>
+    <h4>🔧 Developer Controls</h4>
+    
+    <div style="margin-bottom: 15px; padding: 10px; background: rgba(168,85,247,0.1); border-radius: 4px; border: 1px solid #a855f7;">
+      <label style="display: block; margin-bottom: 5px; color: #a855f7; font-weight: 600;">🔑 Developer Passcode</label>
+      <input type="password" id="devPasscode" placeholder="Enter passcode to unlock all levels">
+      <button class="apply-btn" onclick="checkDevPasscode()" style="background: #a855f7;">Unlock All Levels</button>
+      <button class="apply-btn" onclick="clearDevMode()" style="background: #ef4444;">Clear Dev Mode</button>
+    </div>
+    
+    <h4 style="margin-top: 20px;">Load from URLs</h4>
     <input type="text" id="urlLevel1" placeholder="Level 1 TSV URL">
     <input type="text" id="urlLevel1Hard" placeholder="Level 1 Hard TSV URL">
     <input type="text" id="urlLevel2" placeholder="Level 2 TSV URL">
@@ -545,11 +567,23 @@ h1 {
 
 <script>
 // ============================================
-// EMBEDDED DATA - UPDATE YOUR FILE PATHS HERE
+// DEVELOPER PASSCODE
 // ============================================
+const DEV_PASSCODE = 'PTI2025'; // CHANGE THIS TO YOUR SECRET CODE
 
+// ============================================
+// EMBEDDED DATA - TRY MULTIPLE PATH FORMATS
+// ============================================
 const EMBEDDED_DATA = {
-  level1: `/tsv/Level1.tsv`,
+  level1: `tsv/Level1.tsv`,  // Relative path (no leading /)
+  level1_hard: `tsv/Level1_Hard.tsv`,
+  level2: `tsv/Level2.tsv`,
+  level3: `pending`
+};
+
+// Fallback paths if relative fails
+const FALLBACK_PATHS = {
+  level1: `/tsv/Level1.tsv`,  // Absolute path
   level1_hard: `/tsv/Level1_Hard.tsv`,
   level2: `/tsv/Level2.tsv`,
   level3: `pending`
@@ -570,6 +604,7 @@ let currentDifficulty = 'standard';
 let currentQuestion = null;
 let filteredQuestions = [];
 let dataMode = 'embedded';
+let devModeActive = false;
 
 let stats = {
   level1: { attempted: 0, correct: 0, weak: new Set() },
@@ -581,6 +616,7 @@ let stats = {
 const STATS_KEY = 'treeTrainerStatsV2';
 const UNLOCK_KEY = 'treeTrainerUnlocks';
 const URL_KEY = 'treeTrainerUrls';
+const DEV_KEY = 'treeTrainerDevMode';
 
 const UNLOCK_REQUIREMENTS = {
   level2: { level: 'level1', threshold: 70, minAttempts: 100 },
@@ -588,10 +624,43 @@ const UNLOCK_REQUIREMENTS = {
 };
 
 // ============================================
+// DEVELOPER MODE FUNCTIONS
+// ============================================
+function checkDevPasscode() {
+  const input = document.getElementById('devPasscode').value;
+  if (input === DEV_PASSCODE) {
+    devModeActive = true;
+    localStorage.setItem(DEV_KEY, 'true');
+    updateModeIndicator();
+    checkUnlocks();
+    showUnlockToast('🔓 Developer Mode Activated - All Levels Unlocked');
+    document.getElementById('devPasscode').value = '';
+  } else {
+    alert('❌ Incorrect passcode');
+  }
+}
+
+function clearDevMode() {
+  devModeActive = false;
+  localStorage.removeItem(DEV_KEY);
+  updateModeIndicator();
+  checkUnlocks();
+  alert('✅ Developer mode cleared');
+}
+
+function loadDevMode() {
+  const saved = localStorage.getItem(DEV_KEY);
+  if (saved === 'true') {
+    devModeActive = true;
+  }
+}
+
+// ============================================
 // INITIALIZATION
 // ============================================
 function init() {
   loadStats();
+  loadDevMode(); // Check dev mode first
   loadUnlocks();
   
   const savedUrls = localStorage.getItem(URL_KEY);
@@ -619,55 +688,12 @@ async function loadEmbeddedData() {
   try {
     const promises = [];
     
-    // Level 1 Standard
-    if (EMBEDDED_DATA.level1 && EMBEDDED_DATA.level1 !== 'pending') {
-      if (EMBEDDED_DATA.level1.includes('.tsv') || EMBEDDED_DATA.level1.startsWith('/') || EMBEDDED_DATA.level1.startsWith('./')) {
+    // Try loading with primary paths first, then fallback
+    for (const [level, path] of Object.entries(EMBEDDED_DATA)) {
+      if (path && path !== 'pending') {
         promises.push(
-          fetch(EMBEDDED_DATA.level1)
-            .then(r => r.text())
-            .then(text => { allQuestions.level1 = parseCSV(text); })
+          loadTSVWithFallback(level, path, FALLBACK_PATHS[level])
         );
-      } else {
-        allQuestions.level1 = parseCSV(EMBEDDED_DATA.level1);
-      }
-    }
-    
-    // Level 1 Hard
-    if (EMBEDDED_DATA.level1_hard && EMBEDDED_DATA.level1_hard !== 'pending') {
-      if (EMBEDDED_DATA.level1_hard.includes('.tsv') || EMBEDDED_DATA.level1_hard.startsWith('/') || EMBEDDED_DATA.level1_hard.startsWith('./')) {
-        promises.push(
-          fetch(EMBEDDED_DATA.level1_hard)
-            .then(r => r.text())
-            .then(text => { allQuestions.level1_hard = parseCSV(text); })
-        );
-      } else {
-        allQuestions.level1_hard = parseCSV(EMBEDDED_DATA.level1_hard);
-      }
-    }
-    
-    // Level 2
-    if (EMBEDDED_DATA.level2 && EMBEDDED_DATA.level2 !== 'pending') {
-      if (EMBEDDED_DATA.level2.includes('.tsv') || EMBEDDED_DATA.level2.startsWith('/') || EMBEDDED_DATA.level2.startsWith('./')) {
-        promises.push(
-          fetch(EMBEDDED_DATA.level2)
-            .then(r => r.text())
-            .then(text => { allQuestions.level2 = parseCSV(text); })
-        );
-      } else {
-        allQuestions.level2 = parseCSV(EMBEDDED_DATA.level2);
-      }
-    }
-    
-    // Level 3
-    if (EMBEDDED_DATA.level3 && EMBEDDED_DATA.level3 !== 'pending') {
-      if (EMBEDDED_DATA.level3.includes('.tsv') || EMBEDDED_DATA.level3.startsWith('/') || EMBEDDED_DATA.level3.startsWith('./')) {
-        promises.push(
-          fetch(EMBEDDED_DATA.level3)
-            .then(r => r.text())
-            .then(text => { allQuestions.level3 = parseCSV(text); })
-        );
-      } else {
-        allQuestions.level3 = parseCSV(EMBEDDED_DATA.level3);
       }
     }
     
@@ -676,12 +702,44 @@ async function loadEmbeddedData() {
     document.getElementById('loadingIndicator').classList.add('hidden');
     document.getElementById('questionDisplay').classList.remove('hidden');
     
+    // Show what loaded successfully
+    console.log('Loaded questions:', {
+      level1: allQuestions.level1.length,
+      level1_hard: allQuestions.level1_hard.length,
+      level2: allQuestions.level2.length,
+      level3: allQuestions.level3.length
+    });
+    
     updateLevelCards();
     selectLevel(currentLevel);
     
   } catch (error) {
     showError('Failed to load embedded data: ' + error.message);
     document.getElementById('loadingIndicator').classList.add('hidden');
+  }
+}
+
+async function loadTSVWithFallback(level, primaryPath, fallbackPath) {
+  try {
+    // Try primary path
+    const response = await fetch(primaryPath);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const text = await response.text();
+    allQuestions[level] = parseCSV(text);
+    console.log(`✅ Loaded ${level} from ${primaryPath}`);
+  } catch (primaryError) {
+    console.warn(`Failed to load ${level} from ${primaryPath}, trying fallback...`);
+    try {
+      // Try fallback path
+      const response = await fetch(fallbackPath);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const text = await response.text();
+      allQuestions[level] = parseCSV(text);
+      console.log(`✅ Loaded ${level} from ${fallbackPath} (fallback)`);
+    } catch (fallbackError) {
+      console.error(`❌ Failed to load ${level} from both paths:`, primaryError, fallbackError);
+      showError(`Failed to load ${level}: ${fallbackError.message}`);
+    }
   }
 }
 
@@ -765,7 +823,10 @@ function toggleDevControls() {
 
 function updateModeIndicator() {
   const indicator = document.getElementById('modeIndicator');
-  if (dataMode === 'embedded') {
+  if (devModeActive) {
+    indicator.className = 'mode-indicator mode-dev';
+    indicator.textContent = '🔓 Dev Mode';
+  } else if (dataMode === 'embedded') {
     indicator.className = 'mode-indicator mode-embedded';
     indicator.textContent = '📦 Embedded Data';
   } else {
@@ -808,6 +869,11 @@ function saveStats() {
 function loadUnlocks() {
   // Always calculate unlocks dynamically from stats - don't cache the locked state
   const unlocks = { level1: true, level1_hard: true, level2: false, level3: false };
+  
+  // DEV MODE OVERRIDE - unlock everything
+  if (devModeActive) {
+    return { level1: true, level1_hard: true, level2: true, level3: true };
+  }
   
   // Check if previously shown toast for level 2
   const shownToasts = JSON.parse(localStorage.getItem('treeTrainerToastsShown') || '{}');
@@ -898,8 +964,10 @@ function updateLevelCards() {
   const level2Card = document.getElementById('level2Card');
   if (unlocks.level2) {
     level2Card.classList.remove('locked');
+    if (devModeActive) level2Card.classList.add('dev-unlocked');
   } else {
     level2Card.classList.add('locked');
+    level2Card.classList.remove('dev-unlocked');
   }
   
   document.getElementById('level3Questions').textContent = `${allQuestions.level3.length} questions`;
@@ -909,8 +977,10 @@ function updateLevelCards() {
   const level3Card = document.getElementById('level3Card');
   if (unlocks.level3) {
     level3Card.classList.remove('locked');
+    if (devModeActive) level3Card.classList.add('dev-unlocked');
   } else {
     level3Card.classList.add('locked');
+    level3Card.classList.remove('dev-unlocked');
   }
 }
 
@@ -1148,7 +1218,7 @@ function showExplanation(q, isCorrect) {
   const explanation = document.getElementById('explanation');
   
   let html = isCorrect
-    ? '<p style="color: #22c55e; font-weight: bold; font-size: 1.1rem;">✓ Correct!</p>'
+    ? '<p style="color: #22c55e; font-weight: bold; font-size: 1.1rem;">✔ Correct!</p>'
     : '<p style="color: #ef4444; font-weight: bold; font-size: 1.1rem;">✗ Incorrect</p>';
   
   html += `<p><strong>Key Learning:</strong> ${q.learn}</p>`;
