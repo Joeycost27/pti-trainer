@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pass the Exam - Response Templates</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #1e3a5f; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .category-card { background: rgba(30,41,59,0.8); padding: 20px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); cursor: pointer; }
+        .category-card:hover, .category-card.active { border-color: #22c55e; background: rgba(34,197,94,0.1); }
+        .content-area { background: rgba(30,41,59,0.8); padding: 25px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); min-height: 400px; }
+        .template-item { background: rgba(15,23,42,0.6); padding: 20px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #22c55e; }
+        .condition { color: #fbbf24; font-weight: bold; margin-bottom: 10px; }
+        .response { color: #22c55e; margin-bottom: 10px; }
+        .write-this { background: rgba(34,197,94,0.1); padding: 15px; border-radius: 4px; border: 1px solid rgba(34,197,94,0.3); font-family: monospace; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✓ Pass the Exam - Response Templates</h1>
+        <p class="subtitle">If you see X, write Y. No theory, just what passes.</p>
+
+        <div class="category-grid" id="categoryGrid"></div>
+
+        <div class="content-area" id="contentArea">
+            <p style="color: #94a3b8; text-align: center; padding: 50px;">Select a category to see response templates</p>
+        </div>
+    </div>
+
+    <script>
+        const templates = {
+            defects: {
+                title: 'Defects - What to Write',
+                templates: [
+                    {
+                        condition: 'You see a cavity',
+                        response: 'Write this:',
+                        text: 'Zone [BUTTRESS/LOWER STEM/etc] – [NESW FACE] – [HEIGHT] AGL – CAV [H×W×Dcm] – percussion [SOL/DUL/HOL], probe to [X]cm – reduces structural support on this face – recommend [Picus/sonic tomography] at 1m and 2m AGL within [X] months.'
+                    },
+                    {
+                        condition: 'You see a crack',
+                        response: 'Write this:',
+                        text: 'Zone [BUTTRESS/LOWER STEM/etc] – [NESW FACE] – [HEIGHT] AGL – CR [H×W×Dcm] – percussion [SOL/DUL/HOL] – crack indicates structural weakness – recommend [Picus/sonic tomography] and micro-drilling at [HEIGHT] AGL within [X] months.'
+                    },
+                    {
+                        condition: 'You see fungal fruiting body',
+                        response: 'Write this:',
+                        text: 'Zone [BUTTRESS/ROOT PLATE/etc] – [NESW FACE] – [HEIGHT] AGL – FFB [SPECIES] – indicates [white/brown] rot – colonises [tissues] – structural significance [HIGH/MEDIUM] – recommend [investigation/removal] within [X] [days/weeks].'
+                    },
+                    {
+                        condition: 'You see deadwood',
+                        response: 'Write this:',
+                        text: 'Zone [CROWN/LEADER/LIMB] – [NESW FACE] – [HEIGHT] AGL – DW [H×W×Dcm] – dead branch – risk of falling – recommend removal within [X] months.'
+                    },
+                    {
+                        condition: 'You see included bark at union',
+                        response: 'Write this:',
+                        text: 'Zone [UNION] – [NESW FACE] – [HEIGHT] AGL – IB – V-shaped union with bark inclusion – non-optimised structure – recommend crown reduction to reduce loading within [X] years.'
+                    }
+                ]
+            },
+            fungi: {
+                title: 'Fungi - What to Write',
+                templates: [
+                    {
+                        condition: 'Kretzschmaria deusta at base',
+                        response: 'Write this:',
+                        text: 'Root plate zone – base – 0-0.5m AGL – FFB Kretzschmaria deusta – white rot producing brittle cinder-like wood – colonises root plate and buttress – HIGH structural significance – recommend immediate investigation with sonic tomography at 1m and 2m AGL within 1 week – potential for tree removal if structural compromise severe.'
+                    },
+                    {
+                        condition: 'Armillaria mellea',
+                        response: 'Write this:',
+                        text: 'Root plate zone – base – 0-0.5m AGL – FFB Armillaria mellea – white rot of roots and root collar – aggressive pathogen spreading via rhizomorphs – HIGH windthrow risk – recommend immediate assessment of root stability within 1 week – high risk of tree failure.'
+                    },
+                    {
+                        condition: 'Ganoderma spp. bracket',
+                        response: 'Write this:',
+                        text: 'Buttress zone – base – 0-1m AGL – FFB Ganoderma spp. – white rot leaving fibrous wood – colonises base via root wounds – indicates substantial basal decay – recommend urgent investigation with sonic tomography at 1m AGL within 1 month.'
+                    },
+                    {
+                        condition: 'Birch polypore',
+                        response: 'Write this:',
+                        text: 'Stem zone – [NESW FACE] – [HEIGHT] AGL – FFB Piptoporus betulinus – brown rot with cubical cracking – attack pathogen on birch – reduces structural integrity relatively quickly – recommend removal within [X] months.'
+                    }
+                ]
+            },
+            recommendations: {
+                title: 'Recommendations - What to Write',
+                templates: [
+                    {
+                        condition: 'Recommend sonic tomography',
+                        response: 'Write this:',
+                        text: 'Recommend Picus/sonic tomography at 1m and 2m AGL within [X] months to assess extent of decay. Results will inform whether tree can be retained or requires removal.'
+                    },
+                    {
+                        condition: 'Recommend removal',
+                        response: 'Write this:',
+                        text: 'Recommend tree removal within [X] [days/weeks/months] due to [specific defect] causing structural compromise that cannot be mitigated. Target zone includes [people/structures].'
+                    },
+                    {
+                        condition: 'Recommend crown reduction',
+                        response: 'Write this:',
+                        text: 'Recommend crown reduction by [X]m within [X] years to reduce loading on [defect/union]. Cross-check bird nesting season and bat roosting before setting works timeframe.'
+                    },
+                    {
+                        condition: 'Recommend monitoring',
+                        response: 'Write this:',
+                        text: 'Recommend re-inspection within [X] years to monitor [defect] progression. Tree currently stable but requires ongoing assessment.'
+                    },
+                    {
+                        condition: 'Recommend formative pruning',
+                        response: 'Write this:',
+                        text: 'Recommend formative pruning within [X] years to promote good form and remove structural defects. Species-specific timing to be confirmed.'
+                    }
+                ]
+            },
+            legal: {
+                title: 'Legal - What to Write',
+                templates: [
+                    {
+                        condition: 'Written exam - negligence question',
+                        response: 'Write this:',
+                        text: 'Negligence arises from: (a) an obvious defect that was missed, or (b) negligent professional advice. Courts look for: timeframes stated on recommendations, and a methodical, consistent professional process. The "reasonable inspector test" asks: would a reasonably competent tree inspector with similar training and experience have identified the same defects and made similar recommendations?'
+                    },
+                    {
+                        condition: 'Written exam - liability routes',
+                        response: 'Write this:',
+                        text: 'Professional Indemnity covers recommendations and professional judgement if shown to be wrong or negligent. Public Liability covers claims from people or damage to property arising from the tree itself.'
+                    },
+                    {
+                        condition: 'Written exam - NI statutes',
+                        response: 'Write this:',
+                        text: 'Occupiers\' Liability Order 1987 (NI) - duty of care by landowner/occupier to visitors. Management of Health & Safety at Work Regs 2000 - general duty to assess and manage risk including trees. Roads (NI) Order 1993 - trees affecting roads/highways. Planning Act (NI) 2011 s.12 - TPOs.'
+                    }
+                ]
+            },
+            timing: {
+                title: 'Timeframes - What to Write',
+                templates: [
+                    {
+                        condition: 'Immediate action (high risk)',
+                        response: 'Write this:',
+                        text: 'Immediate action required within 1 week due to [specific high-risk defect].'
+                    },
+                    {
+                        condition: 'Urgent action',
+                        response: 'Write this:',
+                        text: 'Urgent action required within 1 month due to [specific defect].'
+                    },
+                    {
+                        condition: 'Routine action',
+                        response: 'Write this:',
+                        text: 'Action required within 3-6 months due to [specific defect].'
+                    },
+                    {
+                        condition: 'Planned maintenance',
+                        response: 'Write this:',
+                        text: 'Planned maintenance within 1-3 years due to [specific defect].'
+                    },
+                    {
+                        condition: 'Monitoring interval',
+                        response: 'Write this:',
+                        text: 'Re-inspection recommended within [X] years to monitor [defect] progression.'
+                    }
+                ]
+            }
+        };
+
+        function renderCategories() {
+            const grid = document.getElementById('categoryGrid');
+            grid.innerHTML = Object.keys(templates).map(key => `
+                <div class="category-card" onclick="selectCategory('${key}')">
+                    <div style="font-weight: bold;">${templates[key].title}</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8;">${templates[key].templates.length} templates</div>
+                </div>
+            `).join('');
+        }
+
+        function selectCategory(key) {
+            const cat = templates[key];
+            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+            event.target.closest('.category-card').classList.add('active');
+            
+            let html = `<h2 style="color: #22c55e; margin-bottom: 20px;">${cat.title}</h2>`;
+            
+            cat.templates.forEach(t => {
+                html += `
+                    <div class="template-item">
+                        <div class="condition">IF: ${t.condition}</div>
+                        <div class="response">${t.response}</div>
+                        <div class="write-this">${t.text}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        renderCategories();
+    </script>
+</body>
+</html>

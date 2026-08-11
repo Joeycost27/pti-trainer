@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Filler - Pro-Forma Prompts</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #1e3a5f; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; }
+        .form-section { background: rgba(30,41,59,0.8); padding: 25px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); margin-bottom: 20px; }
+        .section-title { color: #22c55e; font-weight: bold; margin-bottom: 15px; }
+        .field-group { margin-bottom: 15px; }
+        .field-label { color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px; }
+        .field-prompt { color: #fbbf24; font-size: 0.85rem; margin-bottom: 5px; }
+        .field-input { width: 100%; padding: 10px; border-radius: 4px; border: 2px solid rgba(100,116,139,0.3); background: rgba(15,23,42,0.8); color: #f1f5f9; }
+        .field-input:focus { border-color: #22c55e; outline: none; }
+        .timer { text-align: center; font-size: 2rem; font-weight: bold; color: #22c55e; margin: 20px 0; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px; }
+        .btn-primary { background: #22c55e; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Form Filler - Pro-Forma Prompts</h1>
+        <p class="subtitle">Fill in exactly what examiners want to see</p>
+
+        <div class="timer" id="timer">15:00</div>
+
+        <div class="form-section">
+            <div class="section-title">Tree Details</div>
+            <div class="field-group">
+                <div class="field-label">Species</div>
+                <div class="field-prompt">Write the exact species name (e.g., Quercus robur)</div>
+                <input type="text" class="field-input" placeholder="Species">
+            </div>
+            <div class="field-group">
+                <div class="field-label">Age Class</div>
+                <div class="field-prompt">Select: Y (Young), MA (Middle Aged), M (Mature), A (Ancient)</div>
+                <input type="text" class="field-input" placeholder="Age class code">
+            </div>
+            <div class="field-group">
+                <div class="field-label">DBH</div>
+                <div class="field-prompt">Diameter at Breast Height in cm (measured at 1.3m AGL)</div>
+                <input type="text" class="field-input" placeholder="DBH in cm">
+            </div>
+            <div class="field-group">
+                <div class="field-label">Height</div>
+                <div class="field-prompt">Tree height in metres</div>
+                <input type="text" class="field-input" placeholder="Height in m">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-title">Condition</div>
+            <div class="field-group">
+                <div class="field-label">Physiological Condition</div>
+                <div class="field-prompt">Select: G (Good), F (Fair), P (Poor)</div>
+                <input type="text" class="field-input" placeholder="Physiological condition code">
+            </div>
+            <div class="field-group">
+                <div class="field-label">Structural Condition</div>
+                <div class="field-prompt">Select: G (Good), F (Fair), P (Poor)</div>
+                <input type="text" class="field-input" placeholder="Structural condition code">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-title">Observations (Use this exact format)</div>
+            <div class="field-group">
+                <div class="field-label">Observation 1</div>
+                <div class="field-prompt">Format: Zone – NESW – Height AGL – Defect Code Size – Test Result – Significance – Recommendation + Timeframe</div>
+                <textarea class="field-input" rows="3" placeholder="Example: Buttress zone – SWF – 0.5-1m AGL – CAV 25×10×25cm – percussion DUL, probe to 25cm – reduces basal support on this face – recommend Picus at 1m and 2m AGL within 3 months"></textarea>
+            </div>
+            <div class="field-group">
+                <div class="field-label">Observation 2</div>
+                <div class="field-prompt">Same format as above</div>
+                <textarea class="field-input" rows="3" placeholder="Observation 2"></textarea>
+            </div>
+            <div class="field-group">
+                <div class="field-label">Observation 3</div>
+                <div class="field-prompt">Same format as above</div>
+                <textarea class="field-input" rows="3" placeholder="Observation 3"></textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-title">Overall Assessment</div>
+            <div class="field-group">
+                <div class="field-label">Overall Risk Rating</div>
+                <div class="field-prompt">Select: Low, Medium, High</div>
+                <input type="text" class="field-input" placeholder="Risk rating">
+            </div>
+            <div class="field-group">
+                <div class="field-label">Overall Recommendation</div>
+                <div class="field-prompt">Include specific action and timeframe</div>
+                <textarea class="field-input" rows="2" placeholder="Overall recommendation with timeframe"></textarea>
+            </div>
+            <div class="field-group">
+                <div class="field-label">Next Inspection Frequency</div>
+                <div class="field-prompt">When should this tree be inspected again?</div>
+                <input type="text" class="field-input" placeholder="Next inspection timeframe">
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button class="btn btn-primary" onclick="startTimer()">Start Timer</button>
+            <button class="btn btn-primary" onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 15 * 60;
+        let timerInterval;
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                clearInterval(timerInterval);
+                alert('Time is up! Submit your form.');
+            }
+        }
+
+        function startTimer() {
+            if (!timerInterval) {
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timeLeft = 15 * 60;
+            document.getElementById('timer').textContent = '15:00';
+        }
+    </script>
+</body>
+</html>
