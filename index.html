@@ -3,55 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PTI Precision Training</title>
+    <title>Pass the Exam - Practical Tools</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #f1f5f9; padding: 20px; min-height: 100vh; }
         .container { max-width: 800px; margin: 0 auto; text-align: center; }
         h1 { color: #22c55e; font-size: 2.5rem; margin-bottom: 10px; }
         .subtitle { color: #94a3b8; margin-bottom: 30px; }
-        .countdown { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 2px solid rgba(34,197,94,0.3); }
-        .countdown-days { font-size: 3rem; font-weight: bold; color: #22c55e; }
-        .start-btn { display: inline-block; padding: 20px 40px; background: #22c55e; color: #fff; text-decoration: none; border-radius: 12px; font-size: 1.2rem; font-weight: bold; transition: all 0.3s; }
-        .start-btn:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(34,197,94,0.4); }
-        .stats { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; margin-top: 30px; border: 2px solid rgba(34,197,94,0.3); }
+        .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .tool-card { background: rgba(30,41,59,0.8); padding: 30px; border-radius: 12px; border: 2px solid rgba(34,197,94,0.2); cursor: pointer; transition: all 0.3s; }
+        .tool-card:hover { transform: translateY(-4px); border-color: #22c55e; }
+        .tool-icon { font-size: 3rem; margin-bottom: 15px; }
+        .tool-title { font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; }
+        .tool-desc { font-size: 0.9rem; color: #94a3b8; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎯 PTI Precision Training</h1>
-        <p class="subtitle">42 precision recall questions across 10 modules</p>
+        <h1>✓ Pass the Exam</h1>
+        <p class="subtitle">Practical tools - no theory, just what passes</p>
 
-        <div class="countdown">
-            <div style="color: #94a3b8; margin-bottom: 10px;">Days Until Resit (9th September 2026)</div>
-            <div class="countdown-days" id="daysLeft">29</div>
-        </div>
+        <div class="tool-grid">
+            <div class="tool-card" onclick="window.location.href='pass-the-exam.html'">
+                <div class="tool-icon">📋</div>
+                <div class="tool-title">Response Templates</div>
+                <div class="tool-desc">If you see X, write Y. Defects, fungi, recommendations, legal, timeframes.</div>
+            </div>
 
-        <a href="precision-recall-system.html" class="start-btn">Start Precision Training</a>
+            <div class="tool-card" onclick="window.location.href='form-filler.html'">
+                <div class="tool-icon">📝</div>
+                <div class="tool-title">Form Filler</div>
+                <div class="tool-desc">Pro-forma with prompts for exactly what to write in each box. 15-min timer.</div>
+            </div>
 
-        <div class="stats">
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: #22c55e;">42</div>
-                    <div style="color: #94a3b8;">Questions</div>
-                </div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: #22c55e;">10</div>
-                    <div style="color: #94a3b8;">Modules</div>
-                </div>
-                <div>
-                    <div style="font-size: 2rem; font-weight: bold; color: #22c55e;">3</div>
-                    <div style="color: #94a3b8;">Difficulty Layers</div>
-                </div>
+            <div class="tool-card" onclick="window.location.href='15min-inspection-practice.html'">
+                <div class="tool-icon">⏱️</div>
+                <div class="tool-title">15-Minute Practice</div>
+                <div class="tool-desc">Timed practice matching exam conditions. Quick checklist included.</div>
             </div>
         </div>
-    </div>
 
-    <script>
-        const resitDate = new Date('2026-09-09');
-        const today = new Date();
-        const diffDays = Math.ceil((resitDate - today) / (1000 * 60 * 60 * 24));
-        document.getElementById('daysLeft').textContent = diffDays > 0 ? diffDays : 'Verify date';
-    </script>
+        <div style="background: rgba(34,197,94,0.1); padding: 20px; border-radius: 12px; border: 2px solid rgba(34,197,94,0.3);">
+            <h3 style="color: #22c55e; margin-bottom: 10px;">How to Use</h3>
+            <ul style="color: #cbd5e1; line-height: 1.8; text-align: left;">
+                <li>Start with Response Templates - memorize the patterns</li>
+                <li>Practice with Form Filler - get used to the format</li>
+                <li>Use 15-Minute Practice - build speed</li>
+                <li>Repeat until it's automatic</li>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
