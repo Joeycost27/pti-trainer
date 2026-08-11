@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Reference Key</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #1e3a5f; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; }
+        .key-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .key-section { background: rgba(30,41,59,0.8); padding: 20px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); }
+        .section-title { color: #22c55e; font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .key-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .key-code { color: #fbbf24; font-weight: bold; }
+        .key-meaning { color: #94a3b8; }
+        .print-btn { display: block; margin: 20px auto; padding: 15px 30px; background: #22c55e; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        @media print {
+            body { background: white; color: black; }
+            .key-section { border: 1px solid #000; page-break-inside: avoid; }
+            .print-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Quick Reference Key</h1>
+        <p class="subtitle">All codes and abbreviations in one place</p>
+
+        <button class="print-btn" onclick="window.print()">🖨 Print This Key</button>
+
+        <div class="key-grid">
+            <div class="key-section">
+                <div class="section-title">Age Classes</div>
+                <div class="key-item"><span class="key-code">Y</span><span class="key-meaning">Young</span></div>
+                <div class="key-item"><span class="key-code">MA</span><span class="key-meaning">Middle Aged</span></div>
+                <div class="key-item"><span class="key-code">M</span><span class="key-meaning">Mature</span></div>
+                <div class="key-item"><span class="key-code">A</span><span class="key-meaning">Ancient</span></div>
+            </div>
+
+            <div class="key-section">
+                <div class="section-title">Condition Codes</div>
+                <div class="key-item"><span class="key-code">G</span><span class="key-meaning">Good</span></div>
+                <div class="key-item"><span class="key-code">F</span><span class="key-meaning">Fair</span></div>
+                <div class="key-item"><span class="key-code">P</span><span class="key-meaning">Poor</span></div>
+            </div>
+
+            <div class="key-section">
+                <div class="section-title">Tree Zones</div>
+                <div class="key-item"><span class="key-code">Root plate</span><span class="key-meaning">Root system</span></div>
+                <div class="key-item"><span class="key-code">Buttress</span><span class="key-meaning">Base flare</span></div>
+                <div class="key-item"><span class="key-code">Lower stem</span><span class="key-meaning">Below crown</span></div>
+                <div class="key-item"><span class="key-code">Upper stem</span><span class="key-meaning">Within crown</span></div>
+                <div class="key-item"><span class="key-code">Union</span><span class="key-meaning">Branch attachment</span></div>
+                <div class="key-item"><span class="key-code">Leader</span><span class="key-meaning">Main stem</span></div>
+                <div class="key-item"><span class="key-code">Crown</span><span class="key-meaning">Overall canopy</span></div>
+                <div class="key-item"><span class="key-code">Limb/Branch</span><span class="key-meaning">Secondary branches</span></div>
+            </div>
+
+            <div class="key-section">
+                <div class="section-title">Compass Faces</div>
+                <div class="key-item"><span class="key-code">NF</span><span class="key-meaning">North Face</span></div>
+                <div class="key-item"><span class="key-code">SF</span><span class="key-meaning">South Face</span></div>
+                <div class="key-item"><span class="key-code">EF</span><span class="key-meaning">East Face</span></div>
+                <div class="key-item"><span class="key-code">WF</span><span class="key-meaning">West Face</span></div>
+                <div class="key-item"><span class="key-code">NEF</span><span class="key-meaning">North-East Face</span></div>
+                <div class="key-item"><span class="key-code">SEF</span><span class="key-meaning">South-East Face</span></div>
+                <div class="key-item"><span class="key-code">SWF</span><span class="key-meaning">South-West Face</span></div>
+                <div class="key-item"><span class="key-code">NWF</span><span class="key-meaning">North-West Face</span></div>
+            </div>
+
+            <div class="key-section">
+                <div class="section-title">Defect Codes</div>
+                <div class="key-item"><span class="key-code">CAV</span><span class="key-meaning">Cavity</span></div>
+                <div class="key-item"><span class="key-code">CR</span><span class="key-meaning">Crack</span></div>
+                <div class="key-item"><span class="key-code">DW</span><span class="key-meaning">Deadwood</span></div>
+                <div class="key-item"><span class="key-code">FFB</span><span class="key-meaning">Fungal Fruiting Body</span></div>
+                <div class="key-item"><span class="key-code">DEC</span><span class="key-meaning">Decay</span></div>
+                <div class="key-item"><span class="key-code">IB/BI</span><span class="key-meaning">Included Bark</span></div>
+                <div class="key-item"><span class="key-code">DB</span><span class="key-meaning">Dieback</span></div>
+                <div class="key-item"><span class="key-code">EP</span><span class="key-meaning">Epicormic Growth</span></div>
+                <div class="key-item"><span class="key-code">SP</span><span class="key-meaning">Split</span></div>
+                <div class="key-item"><span class="key-code">RG</span><span class="key-meaning">Reaction Growth</span></div>
+            </div>
+
+            <div class="key-section">
+                <div class="section-title">Percussion Test Results</div>
+                <div class="key-item"><span class="key-code">SOL</span><span class="key-meaning">Sound</span></div>
+                <div class="key-item"><span class="key-code">DUL</span><span class="key-meaning">Dull</span></div>
+                <div class="key-item"><span class="key-code">HOL</span><span class="key-meaning">Hollow</span></div>
+                <div class="key-item"><span class="key-code">PRB</span><span class="key-meaning">Probe (depth recorded)</span></div>
+            </div>
+
+            <div class="key-section">
+                <div class="section-title">Measurements</div>
+                <div class="key-item"><span class="key-code">DBH</span><span class="key-meaning">Diameter at Breast Height (1.3m AGL)</span></div>
+                <div class="key-item"><span class="key-code">AGL</span><span class="key-meaning">Above Ground Level</span></div>
+                <div class="key-item"><span class="key-code">H×W×D</span><span class="key-meaning">Height × Width × Depth (cm)</span></div>
+            </div>
+
+            <div class="key-section">
+                <div class="section-title">Risk Ratings</div>
+                <div class="key-item"><span class="key-code">Low</span><span class="key-meaning">Routine monitoring</span></div>
+                <div class="key-item"><span class="key-code">Medium</span><span class="key-meaning">Action within 1-3 months</span></div>
+                <div class="key-item"><span class="key-code">High</span><span class="key-meaning">Immediate action (1 week)</span></div>
+            </div>
+
+            <div class="key-section">
+                <div class="section-title">Key Fungi</div>
+                <div class="key-item"><span class="key-code">Kretzschmaria deusta</span><span class="key-meaning">Brittle cinder - HIGH risk</span></div>
+                <div class="key-item"><span class="key-code">Armillaria mellea</span><span class="key-meaning">Honey fungus - HIGH risk</span></div>
+                <div class="key-item"><span class="key-code">Ganoderma spp.</span><span class="key-meaning">Bracket fungi - HIGH risk</span></div>
+                <div class="key-item"><span class="key-code">Piptoporus betulinus</span><span class="key-meaning">Birch polypore - attack pathogen</span></div>
+            </div>
+
+            <div class="key-section">
+                <div class="section-title">Field Order (Write This)</div>
+                <div class="key-item"><span class="key-code">1</span><span class="key-meaning">Zone</span></div>
+                <div class="key-item"><span class="key-code">2</span><span class="key-meaning">NESW Orientation</span></div>
+                <div class="key-item"><span class="key-code">3</span><span class="key-meaning">Height AGL</span></div>
+                <div class="key-item"><span class="key-code">4</span><span class="key-meaning">Defect Code + Size</span></div>
+                <div class="key-item"><span class="key-code">5</span><span class="key-meaning">Test Result</span></div>
+                <div class="key-item"><span class="key-code">6</span><span class="key-meaning">Significance</span></div>
+                <div class="key-item"><span class="key-code">7</span><span class="key-meaning">Recommendation + Timeframe</span></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

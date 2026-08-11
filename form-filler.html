@@ -20,6 +20,17 @@
         .timer { text-align: center; font-size: 2rem; font-weight: bold; color: #22c55e; margin: 20px 0; }
         .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px; }
         .btn-primary { background: #22c55e; color: #fff; }
+        .main-layout { display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
+        .key-sidebar { background: rgba(30,41,59,0.8); padding: 20px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); height: fit-content; }
+        .key-section { margin-bottom: 20px; }
+        .key-title { color: #22c55e; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; }
+        .key-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.8rem; }
+        .key-code { color: #fbbf24; font-weight: bold; }
+        .key-meaning { color: #94a3b8; }
+        @media (max-width: 900px) {
+            .main-layout { grid-template-columns: 1fr; }
+            .key-sidebar { order: -1; }
+        }
     </style>
 </head>
 <body>
@@ -29,85 +40,147 @@
 
         <div class="timer" id="timer">15:00</div>
 
-        <div class="form-section">
-            <div class="section-title">Tree Details</div>
-            <div class="field-group">
-                <div class="field-label">Species</div>
-                <div class="field-prompt">Write the exact species name (e.g., Quercus robur)</div>
-                <input type="text" class="field-input" placeholder="Species">
-            </div>
-            <div class="field-group">
-                <div class="field-label">Age Class</div>
-                <div class="field-prompt">Select: Y (Young), MA (Middle Aged), M (Mature), A (Ancient)</div>
-                <input type="text" class="field-input" placeholder="Age class code">
-            </div>
-            <div class="field-group">
-                <div class="field-label">DBH</div>
-                <div class="field-prompt">Diameter at Breast Height in cm (measured at 1.3m AGL)</div>
-                <input type="text" class="field-input" placeholder="DBH in cm">
-            </div>
-            <div class="field-group">
-                <div class="field-label">Height</div>
-                <div class="field-prompt">Tree height in metres</div>
-                <input type="text" class="field-input" placeholder="Height in m">
-            </div>
-        </div>
+        <div class="main-layout">
+            <div class="main-content">
+                <div class="form-section">
+                    <div class="section-title">Tree Details</div>
+                    <div class="field-group">
+                        <div class="field-label">Species</div>
+                        <div class="field-prompt">Write the exact species name (e.g., Quercus robur)</div>
+                        <input type="text" class="field-input" placeholder="Species">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Age Class</div>
+                        <div class="field-prompt">Select: Y (Young), MA (Middle Aged), M (Mature), A (Ancient)</div>
+                        <input type="text" class="field-input" placeholder="Age class code">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">DBH</div>
+                        <div class="field-prompt">Diameter at Breast Height in cm (measured at 1.3m AGL)</div>
+                        <input type="text" class="field-input" placeholder="DBH in cm">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Height</div>
+                        <div class="field-prompt">Tree height in metres</div>
+                        <input type="text" class="field-input" placeholder="Height in m">
+                    </div>
+                </div>
 
-        <div class="form-section">
-            <div class="section-title">Condition</div>
-            <div class="field-group">
-                <div class="field-label">Physiological Condition</div>
-                <div class="field-prompt">Select: G (Good), F (Fair), P (Poor)</div>
-                <input type="text" class="field-input" placeholder="Physiological condition code">
-            </div>
-            <div class="field-group">
-                <div class="field-label">Structural Condition</div>
-                <div class="field-prompt">Select: G (Good), F (Fair), P (Poor)</div>
-                <input type="text" class="field-input" placeholder="Structural condition code">
-            </div>
-        </div>
+                <div class="form-section">
+                    <div class="section-title">Condition</div>
+                    <div class="field-group">
+                        <div class="field-label">Physiological Condition</div>
+                        <div class="field-prompt">Select: G (Good), F (Fair), P (Poor)</div>
+                        <input type="text" class="field-input" placeholder="Physiological condition code">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Structural Condition</div>
+                        <div class="field-prompt">Select: G (Good), F (Fair), P (Poor)</div>
+                        <input type="text" class="field-input" placeholder="Structural condition code">
+                    </div>
+                </div>
 
-        <div class="form-section">
-            <div class="section-title">Observations (Use this exact format)</div>
-            <div class="field-group">
-                <div class="field-label">Observation 1</div>
-                <div class="field-prompt">Format: Zone – NESW – Height AGL – Defect Code Size – Test Result – Significance – Recommendation + Timeframe</div>
-                <textarea class="field-input" rows="3" placeholder="Example: Buttress zone – SWF – 0.5-1m AGL – CAV 25×10×25cm – percussion DUL, probe to 25cm – reduces basal support on this face – recommend Picus at 1m and 2m AGL within 3 months"></textarea>
-            </div>
-            <div class="field-group">
-                <div class="field-label">Observation 2</div>
-                <div class="field-prompt">Same format as above</div>
-                <textarea class="field-input" rows="3" placeholder="Observation 2"></textarea>
-            </div>
-            <div class="field-group">
-                <div class="field-label">Observation 3</div>
-                <div class="field-prompt">Same format as above</div>
-                <textarea class="field-input" rows="3" placeholder="Observation 3"></textarea>
-            </div>
-        </div>
+                <div class="form-section">
+                    <div class="section-title">Observations (Use this exact format)</div>
+                    <div class="field-group">
+                        <div class="field-label">Observation 1</div>
+                        <div class="field-prompt">Format: Zone – NESW – Height AGL – Defect Code Size – Test Result – Significance – Recommendation + Timeframe</div>
+                        <textarea class="field-input" rows="3" placeholder="Example: Buttress zone – SWF – 0.5-1m AGL – CAV 25×10×25cm – percussion DUL, probe to 25cm – reduces basal support on this face – recommend Picus at 1m and 2m AGL within 3 months"></textarea>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Observation 2</div>
+                        <div class="field-prompt">Same format as above</div>
+                        <textarea class="field-input" rows="3" placeholder="Observation 2"></textarea>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Observation 3</div>
+                        <div class="field-prompt">Same format as above</div>
+                        <textarea class="field-input" rows="3" placeholder="Observation 3"></textarea>
+                    </div>
+                </div>
 
-        <div class="form-section">
-            <div class="section-title">Overall Assessment</div>
-            <div class="field-group">
-                <div class="field-label">Overall Risk Rating</div>
-                <div class="field-prompt">Select: Low, Medium, High</div>
-                <input type="text" class="field-input" placeholder="Risk rating">
-            </div>
-            <div class="field-group">
-                <div class="field-label">Overall Recommendation</div>
-                <div class="field-prompt">Include specific action and timeframe</div>
-                <textarea class="field-input" rows="2" placeholder="Overall recommendation with timeframe"></textarea>
-            </div>
-            <div class="field-group">
-                <div class="field-label">Next Inspection Frequency</div>
-                <div class="field-prompt">When should this tree be inspected again?</div>
-                <input type="text" class="field-input" placeholder="Next inspection timeframe">
-            </div>
-        </div>
+                <div class="form-section">
+                    <div class="section-title">Overall Assessment</div>
+                    <div class="field-group">
+                        <div class="field-label">Overall Risk Rating</div>
+                        <div class="field-prompt">Select: Low, Medium, High</div>
+                        <input type="text" class="field-input" placeholder="Risk rating">
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Overall Recommendation</div>
+                        <div class="field-prompt">Include specific action and timeframe</div>
+                        <textarea class="field-input" rows="2" placeholder="Overall recommendation with timeframe"></textarea>
+                    </div>
+                    <div class="field-group">
+                        <div class="field-label">Next Inspection Frequency</div>
+                        <div class="field-prompt">When should this tree be inspected again?</div>
+                        <input type="text" class="field-input" placeholder="Next inspection timeframe">
+                    </div>
+                </div>
 
-        <div style="text-align: center; margin-top: 20px;">
-            <button class="btn btn-primary" onclick="startTimer()">Start Timer</button>
-            <button class="btn btn-primary" onclick="resetTimer()">Reset</button>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="startTimer()">Start Timer</button>
+                    <button class="btn btn-primary" onclick="resetTimer()">Reset</button>
+                </div>
+            </div>
+
+            <div class="key-sidebar">
+                <div class="key-section">
+                    <div class="key-title">Age Classes</div>
+                    <div class="key-item"><span class="key-code">Y</span><span class="key-meaning">Young</span></div>
+                    <div class="key-item"><span class="key-code">MA</span><span class="key-meaning">Middle Aged</span></div>
+                    <div class="key-item"><span class="key-code">M</span><span class="key-meaning">Mature</span></div>
+                    <div class="key-item"><span class="key-code">A</span><span class="key-meaning">Ancient</span></div>
+                </div>
+
+                <div class="key-section">
+                    <div class="key-title">Condition</div>
+                    <div class="key-item"><span class="key-code">G</span><span class="key-meaning">Good</span></div>
+                    <div class="key-item"><span class="key-code">F</span><span class="key-meaning">Fair</span></div>
+                    <div class="key-item"><span class="key-code">P</span><span class="key-meaning">Poor</span></div>
+                </div>
+
+                <div class="key-section">
+                    <div class="key-title">Compass Faces</div>
+                    <div class="key-item"><span class="key-code">NF</span><span class="key-meaning">North</span></div>
+                    <div class="key-item"><span class="key-code">SF</span><span class="key-meaning">South</span></div>
+                    <div class="key-item"><span class="key-code">EF</span><span class="key-meaning">East</span></div>
+                    <div class="key-item"><span class="key-code">WF</span><span class="key-meaning">West</span></div>
+                </div>
+
+                <div class="key-section">
+                    <div class="key-title">Defect Codes</div>
+                    <div class="key-item"><span class="key-code">CAV</span><span class="key-meaning">Cavity</span></div>
+                    <div class="key-item"><span class="key-code">CR</span><span class="key-meaning">Crack</span></div>
+                    <div class="key-item"><span class="key-code">DW</span><span class="key-meaning">Deadwood</span></div>
+                    <div class="key-item"><span class="key-code">FFB</span><span class="key-meaning">Fungal FB</span></div>
+                    <div class="key-item"><span class="key-code">DEC</span><span class="key-meaning">Decay</span></div>
+                    <div class="key-item"><span class="key-code">IB</span><span class="key-meaning">Incl Bark</span></div>
+                    <div class="key-item"><span class="key-code">DB</span><span class="key-meaning">Dieback</span></div>
+                    <div class="key-item"><span class="key-code">EP</span><span class="key-meaning">Epicormic</span></div>
+                    <div class="key-item"><span class="key-code">SP</span><span class="key-meaning">Split</span></div>
+                    <div class="key-item"><span class="key-code">RG</span><span class="key-meaning">React Growth</span></div>
+                </div>
+
+                <div class="key-section">
+                    <div class="key-title">Percussion</div>
+                    <div class="key-item"><span class="key-code">SOL</span><span class="key-meaning">Sound</span></div>
+                    <div class="key-item"><span class="key-code">DUL</span><span class="key-meaning">Dull</span></div>
+                    <div class="key-item"><span class="key-code">HOL</span><span class="key-meaning">Hollow</span></div>
+                    <div class="key-item"><span class="key-code">PRB</span><span class="key-meaning">Probe depth</span></div>
+                </div>
+
+                <div class="key-section">
+                    <div class="key-title">Field Order</div>
+                    <div class="key-item"><span class="key-code">1</span><span class="key-meaning">Zone</span></div>
+                    <div class="key-item"><span class="key-code">2</span><span class="key-meaning">NESW</span></div>
+                    <div class="key-item"><span class="key-code">3</span><span class="key-meaning">Height</span></div>
+                    <div class="key-item"><span class="key-code">4</span><span class="key-meaning">Defect</span></div>
+                    <div class="key-item"><span class="key-code">5</span><span class="key-meaning">Test</span></div>
+                    <div class="key-item"><span class="key-code">6</span><span class="key-meaning">Significance</span></div>
+                    <div class="key-item"><span class="key-code">7</span><span class="key-meaning">Recommend</span></div>
+                </div>
+            </div>
         </div>
     </div>
 
