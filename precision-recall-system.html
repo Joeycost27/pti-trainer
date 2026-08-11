@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTI Precision Recall System</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #1e3a5f; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .module-card { background: rgba(30,41,59,0.8); padding: 20px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); cursor: pointer; }
+        .module-card:hover, .module-card.active { border-color: #22c55e; background: rgba(34,197,94,0.1); }
+        .module-title { font-weight: bold; margin-bottom: 5px; }
+        .module-subtitle { font-size: 0.8rem; color: #94a3b8; }
+        .content-area { background: rgba(30,41,59,0.8); padding: 25px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); min-height: 500px; }
+        .question-layer { margin-bottom: 20px; }
+        .layer-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-bottom: 10px; }
+        .layer-1 { background: rgba(34,197,94,0.2); color: #22c55e; }
+        .layer-2 { background: rgba(251,191,36,0.2); color: #fbbf24; }
+        .layer-3 { background: rgba(239,68,68,0.2); color: #ef4444; }
+        .question-text { font-size: 1.1rem; margin-bottom: 15px; font-weight: bold; }
+        .answer-area { width: 100%; min-height: 120px; padding: 15px; border-radius: 6px; border: 2px solid rgba(100,116,139,0.3); background: rgba(15,23,42,0.8); color: #f1f5f9; font-size: 14px; margin-bottom: 15px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px; }
+        .btn-primary { background: #22c55e; color: #fff; }
+        .model-answer { background: rgba(34,197,94,0.1); padding: 15px; border-radius: 6px; margin-top: 15px; border: 1px solid rgba(34,197,94,0.3); display: none; }
+        .model-answer.show { display: block; }
+        .precision-note { background: rgba(251,191,36,0.1); padding: 15px; border-radius: 6px; margin-top: 15px; border-left: 4px solid #fbbf24; }
+        .precision-title { color: #fbbf24; font-weight: bold; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 PTI Precision Recall System</h1>
+        <p class="subtitle">Based on your Lantra PTI course notes - Deep recall & precision training</p>
+
+        <div class="module-grid" id="moduleGrid"></div>
+
+        <div class="content-area" id="contentArea">
+            <p style="color: #94a3b8; text-align: center; padding: 50px;">Select a module to begin precision recall training</p>
+        </div>
+    </div>
+
+    <script>
+        const modules = [
+            {
+                id: 'legal',
+                title: 'Legal Framework',
+                subtitle: 'Statute, Common Law, NTSG, BS 3998',
+                questions: [
+                    {
+                        layer: 1,
+                        question: 'State the TWO liability routes that tree inspectors must understand and explain what each covers.',
+                        answer: 'Professional Indemnity - covers recommendations and professional judgement if shown to be wrong or negligent. Public Liability - covers claims from people or damage to property arising from the tree itself.',
+                        precision: 'Must distinguish between advice (PI) and tree failure (PL)'
+                    },
+                    {
+                        layer: 2,
+                        question: 'For Northern Ireland, name FOUR specific statutes relevant to tree inspection and state what each governs.',
+                        answer: 'Occupiers\' Liability Order 1987 (NI) - duty of care by landowner/occupier to visitors. Management of Health & Safety at Work Regs 2000 - general duty to assess and manage risk including trees. Roads (NI) Order 1993 - trees affecting roads/highways. Local Government (Miscellaneous Provisions) (NI) 1985 - local authority powers. Planning Act (NI) 2011 s.12 - TPOs.',
+                        precision: 'Must include exact Act names and their specific tree relevance'
+                    },
+                    {
+                        layer: 3,
+                        question: 'Explain the "reasonable inspector test" and why courts reject "no standard" as a defence. Include reference to NTSG and BS 3998.',
+                        answer: 'The reasonable inspector test asks: would a reasonably competent tree inspector with similar training and experience have identified the same defects and made similar recommendations? Courts reject "no standard", "no time", or "no resources" as defences - inspectors are expected to maintain professional standards regardless of workload. NTSG provides industry benchmark for proportionate approach. BS 3998 is the British Standard for tree work recommendations.',
+                        precision: 'Must connect the test to specific standards and explain why workload is not a defence'
+                    }
+                ]
+            },
+            {
+                id: 'codit',
+                title: 'CODIT',
+                subtitle: 'All 4 walls, limitations, application',
+                questions: [
+                    {
+                        layer: 1,
+                        question: 'List all 4 CODIT walls in order from weakest to strongest and state what each resists.',
+                        answer: 'Wall 1 (weakest) - resists vertical spread via tylosis/mucilage plugs in vessels. Wall 2 - resists inward spread via latewood/annual growth rings. Wall 3 - resists sideways spread via medullary (ray) cells. Wall 4 (strongest) - resists outward spread, protects future growth via cambium-produced wood.',
+                        precision: 'Must order correctly and specify direction of spread resisted'
+                    },
+                    {
+                        layer: 2,
+                        question: 'What is the CRITICAL limitation of CODIT and why does this matter for tree inspection?',
+                        answer: 'CODIT applies to SAPWOOD only - heartwood is already dead tissue and cannot compartmentalise. This matters because decay in heartwood cannot be stopped by CODIT; inspectors must assess heartwood decay differently than sapwood decay.',
+                        precision: 'Must explicitly state "sapwood only" and explain inspection implication'
+                    },
+                    {
+                        layer: 3,
+                        question: 'A tree shows a cavity at 2m AGL with fungal fruiting bodies. Apply CODIT principles to explain: (1) which walls are still functional, (2) what the presence of FFB indicates about compartmentalisation, and (3) how this affects your recommendation.',
+                        answer: 'If cavity is in heartwood, CODIT walls 1-3 are not functional (heartwood cannot compartmentalise). Only Wall 4 (barrier zone) may be active if cambium is still producing wood. FFB indicates compartmentalisation has failed - fungus has breached the barriers. Recommendation must consider that decay cannot be compartmentalised in heartwood - structural assessment needed, not just monitoring.',
+                        precision: 'Must apply CODIT to specific scenario and link to recommendation'
+                    }
+                ]
+            },
+            {
+                id: 'energy',
+                title: 'Tree Energy & Mass',
+                subtitle: 'Potential/kinetic energy, dynamic/static mass',
+                questions: [
+                    {
+                        layer: 1,
+                        question: 'Define potential energy and kinetic energy in trees. What is the "1:1 ratio"?',
+                        answer: 'Potential energy = stored energy (glucose/carbohydrates). Kinetic energy = energy used in active growth/movement. 1:1 ratio represents optimal balance where energy production equals energy consumption.',
+                        precision: 'Must distinguish between stored and used energy'
+                    },
+                    {
+                        layer: 2,
+                        question: 'Contrast young trees vs mature trees in terms of dynamic vs static mass. What is "crown retrenchment"?',
+                        answer: 'Young trees have "dynamic mass" - actively growing, putting resources into new growth. Mature trees undergo crown retrenchment - tree favours smaller, more sustainable crown as growth slows. Static mass = state where energy production and cost are in balance. Beyond this balance, tree declines.',
+                        precision: 'Must explain the shift from dynamic to static and define retrenchment'
+                    },
+                    {
+                        layer: 3,
+                        question: 'Explain the energy trade-off of pruning. How does formative pruning on young trees differ from large corrective cuts on mature trees in terms of energy impact?',
+                        answer: 'Every pruning cut is an energy trade-off: reduces photosynthetic capacity (fewer leaves) vs requires stored energy for CODIT wound response. Formative pruning on young trees produces smaller wounds and tree retains close to 100% of dynamic mass. Large corrective cuts on mature trees significantly reduce photosynthetic capacity while requiring substantial energy for wound sealing, pushing tree toward static mass faster.',
+                        precision: 'Must quantify the energy difference and explain the consequence'
+                    }
+                ]
+            },
+            {
+                id: 'fungi',
+                title: 'Fungi & Decay',
+                subtitle: 'Colonisation strategy, significance, assessment',
+                questions: [
+                    {
+                        layer: 1,
+                        question: 'For any fungus, what FOUR elements must you assess? Distinguish between anamorphic and teleomorphic states.',
+                        answer: '1. Colonised tissues. 2. Type/mode of decay (white rot or brown rot). 3. Which parts of tree are colonised. 4. Significance for stability and condition. Anamorphic = asexual state. Teleomorphic = sexual, spore-producing state. Both can occur for same fungus at different times.',
+                        precision: 'Must list all 4 elements and distinguish fungal states'
+                    },
+                    {
+                        layer: 2,
+                        question: 'Contrast brown rot vs white rot in terms of: (1) what they break down, (2) visual appearance, (3) mechanical effect on wood.',
+                        answer: 'Brown rot breaks down cellulose and hemicellulose, leaves lignin intact. Appearance: cubical cracking, brown residue, brittle wood. Mechanical: rapid loss of bending strength, wood snaps rather than bends, sudden failure. White rot breaks down lignin preferentially. Appearance: pale cream/white, fibrous/stringy texture. Mechanical: loss of compression strength and rigidity, wood becomes flexible before failing.',
+                        precision: 'Must contrast all three aspects for both rot types'
+                    },
+                    {
+                        layer: 3,
+                        question: 'You find Kretzschmaria deusta at the base of an oak. Apply the 4-element assessment framework and provide: colonised tissues, decay type, structural significance, and recommendation with timeframe.',
+                        answer: 'Colonised tissues: root plate and buttress region. Decay type: white rot but produces brittle cinder-like wood. Parts colonised: base and major roots. Significance: HIGH structural concern near base - causes sudden failure. Recommendation: immediate investigation (within 1 week) with sonic tomography at 1m and 2m AGL to assess extent, potential for tree removal if structural compromise severe.',
+                        precision: 'Must apply framework exactly and provide specific, defensible recommendation'
+                    }
+                ]
+            },
+            {
+                id: 'risk',
+                title: 'Risk Assessment',
+                subtitle: 'Survey method, rating, proprietary systems',
+                questions: [
+                    {
+                        layer: 1,
+                        question: 'In what order should you survey the environment? What must you establish FIRST?',
+                        answer: 'Survey the environment FIRST and establish the target zone (what could be struck if tree/part fails). Then use cardinal points to orientate environment and defects.',
+                        precision: 'Must emphasize target zone comes before tree assessment'
+                    },
+                    {
+                        layer: 2,
+                        question: 'How do you assess vitality in winter vs full leaf? What must you always compare to?',
+                        answer: 'Winter: judged by bud density. Full leaf: judged by canopy density. Always compare to neighbouring trees of SAME or SIMILAR species, not in isolation.',
+                        precision: 'Must specify seasonal difference and comparison requirement'
+                    },
+                    {
+                        layer: 3,
+                        question: 'Name FOUR proprietary risk systems with their associated authors. Explain the quantitative factors behind qualitative risk ratings.',
+                        answer: 'VALID - David Evans. QTRA (Quantified Tree Risk Assessment) - Mike Ellison. THREATS - Julian Forbes-Laird. TRAQ (Tree Risk Assessment Qualification) - ISA. Quantitative factors: (1) Urgency - timeframe for action, (2) Frequency of next tree inspection. These drive the Low/Medium/High qualitative output.',
+                        precision: 'Must name all systems with correct authors and explain quantitative drivers'
+                    }
+                ]
+            },
+            {
+                id: 'inspection',
+                title: 'Inspection Methodology',
+                subtitle: 'Field order, pro-forma, timing',
+                questions: [
+                    {
+                        layer: 1,
+                        question: 'State the improved field order for observations. Why is this better than the original pro-forma?',
+                        answer: 'Zone → Orientation → Height above ground → Defect code + size → Test result → Significance → Recommendation + timeframe. Better because each observation is self-contained and directly defensible, unlike the original which mixed everything in one narrative cell.',
+                        precision: 'Must state exact order and explain the defensible documentation benefit'
+                    },
+                    {
+                        layer: 2,
+                        question: 'What are the EXACT timing requirements for the practical assessment? Why did errors creep in at this pace?',
+                        answer: 'Two trees assessed back-to-back: 15 minutes inspection + 5 minutes write-up EACH. Errors crept in because this pace requires systematic, practiced methodology - no time to search for information or reconsider structure.',
+                        precision: 'Must state exact timing (15+5) and explain the pressure consequence'
+                    },
+                    {
+                        layer: 3,
+                        question: 'Write a complete observation using the improved field order for: cavity on SW face at 0.5-1m AGL, 25cmH×10cmW×25cmD, percussion dull, probe to 25cm.',
+                        answer: 'Buttress zone – SWF – 0.5-1m AGL – CAV 25×10×25cm – percussion DUL, probe to 25cm – reduces basal support on this face – recommend Picus/sonic tomography at 1m and 2m AGL within 3 months.',
+                        precision: 'Must use exact codes and format, include recommendation with timeframe'
+                    }
+                ]
+            },
+            {
+                id: 'technology',
+                title: 'Decay Detection Technology',
+                subtitle: 'Percussion, sonic tomography, micro-drilling',
+                questions: [
+                    {
+                        layer: 1,
+                        question: 'What are the THREE main decay detection methods? State the FIRST-LINE test.',
+                        answer: 'Percussion (sounding) hammer, Sonic tomography (e.g. Picus), Micro-drilling (resistograph). First-line: percussion hammer - low-tech, quick assessment.',
+                        precision: 'Must list all three and identify percussion as first-line'
+                    },
+                    {
+                        layer: 2,
+                        question: 'For sonic tomography, at what heights should testing be carried out? Why must these heights be stated in recommendations?',
+                        answer: 'As close to ground level as possible, typically at 1m and 2m AGL. Must be stated because examiners check this - results only apply to specific heights scanned, not entire stem.',
+                        precision: 'Must specify exact heights and explain why documentation matters'
+                    },
+                    {
+                        layer: 3,
+                        question: 'What are the TWO key limitations of Picus/sonic tomography? When is micro-drilling specifically recommended?',
+                        answer: 'Limitation 1: Only tests the specific plane/height scanned - not complete 3D picture. Limitation 2: Results must be correlated with visual assessment, not read as standalone proof. Micro-drilling specifically recommended where CRACKS are present - shows how far decay has spread laterally and outward from crack.',
+                        precision: 'Must state both limitations and specific crack indication for micro-drilling'
+                    }
+                ]
+            }
+        ];
+
+        function renderModules() {
+            const grid = document.getElementById('moduleGrid');
+            grid.innerHTML = modules.map(mod => `
+                <div class="module-card" onclick="selectModule('${mod.id}')">
+                    <div class="module-title">${mod.title}</div>
+                    <div class="module-subtitle">${mod.subtitle}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectModule(id) {
+            const mod = modules.find(m => m.id === id);
+            document.querySelectorAll('.module-card').forEach(c => c.classList.remove('active'));
+            event.target.closest('.module-card').classList.add('active');
+            
+            let html = `<h2 style="color: #22c55e; margin-bottom: 20px;">${mod.title}</h2>`;
+            
+            mod.questions.forEach((q, i) => {
+                html += `
+                    <div class="question-layer">
+                        <span class="layer-badge layer-${q.layer}">Layer ${q.layer}</span>
+                        <div class="question-text">${q.question}</div>
+                        <textarea class="answer-area" placeholder="Write your answer..."></textarea>
+                        <button class="btn btn-primary" onclick="showAnswer(${i})">Show Answer</button>
+                        <div class="model-answer" id="answer-${i}">
+                            <strong>Model Answer:</strong>
+                            <p style="margin-top: 10px; line-height: 1.6;">${q.answer}</p>
+                            <div class="precision-note">
+                                <div class="precision-title">⚡ Precision Check:</div>
+                                <p>${q.precision}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        function showAnswer(index) {
+            document.getElementById(`answer-${index}`).classList.add('show');
+        }
+
+        renderModules();
+    </script>
+</body>
+</html>
