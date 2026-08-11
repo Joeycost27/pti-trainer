@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal & Professional Duty Knowledge</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #1e3a5f; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 20px; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .module-card { background: rgba(30,41,59,0.8); padding: 20px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); cursor: pointer; }
+        .module-card:hover, .module-card.active { border-color: #22c55e; background: rgba(34,197,94,0.1); }
+        .content-area { background: rgba(30,41,59,0.8); padding: 25px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); }
+        .key-point { background: rgba(15,23,42,0.6); padding: 15px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #22c55e; }
+        .key-point-title { color: #22c55e; font-weight: bold; margin-bottom: 5px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px; }
+        .btn-primary { background: #22c55e; color: #fff; }
+        .btn-secondary { background: transparent; border: 2px solid #22c55e; color: #22c55e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚖️ Legal & Professional Duty Knowledge</h1>
+        <p style="text-align: center; color: #94a3b8; margin-bottom: 20px;">Written assessment gaps (22/40 = 55%) - Target: 90%+</p>
+
+        <div class="module-grid">
+            <div class="module-card active" onclick="selectModule('standards')">📋 Standards</div>
+            <div class="module-card" onclick="selectModule('negligence')">⚖️ Negligence</div>
+            <div class="module-card" onclick="selectModule('duty')">🎯 Duty</div>
+            <div class="module-card" onclick="selectModule('prioritisation')">🔥 Prioritisation</div>
+        </div>
+
+        <div class="content-area" id="contentArea">
+            <h2 style="color: #22c55e; margin-bottom: 15px;">📋 Tree Inspector Standards</h2>
+            <div class="key-point">
+                <div class="key-point-title">BS 3998:2010</div>
+                <p>Principal UK standard for tree work recommendations. Use as benchmark for your recommendations.</p>
+            </div>
+            <div class="key-point">
+                <div class="key-point-title">Reasonable Inspector Test</div>
+                <p>Would a competent inspector with similar training/experience reach the same conclusions?</p>
+            </div>
+            <div class="key-point">
+                <div class="key-point-title">Defensible Documentation</div>
+                <p>Another competent professional must understand your observations, reasoning, and recommendations.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modules = {
+            standards: `<h2 style="color: #22c55e; margin-bottom: 15px;">📋 Tree Inspector Standards</h2>
+                <div class="key-point"><div class="key-point-title">BS 3998:2010</div><p>Principal UK standard for tree work recommendations. Use as benchmark for your recommendations.</p></div>
+                <div class="key-point"><div class="key-point-title">Reasonable Inspector Test</div><p>Would a competent inspector with similar training/experience reach the same conclusions?</p></div>
+                <div class="key-point"><div class="key-point-title">Defensible Documentation</div><p>Another competent professional must understand your observations, reasoning, and recommendations.</p></div>`,
+            negligence: `<h2 style="color: #22c55e; margin-bottom: 15px;">⚖️ Negligence Principles</h2>
+                <div class="key-point"><div class="key-point-title">Duty of Care</div><p>Legal obligation to avoid acts/omissions that could cause harm to others.</p></div>
+                <div class="key-point"><div class="key-point-title">Breach of Duty</div><p>Standard of care falls below what is reasonable - failing to identify foreseeable risks.</p></div>
+                <div class="key-point"><div class="key-point-title">Causation</div><p>Breach must be direct cause of harm - failure to inspect/act led to injury/damage.</p></div>
+                <div class="key-point"><div class="key-point-title">Foreseeability</div><p>Risks must be reasonably foreseeable to a competent inspector.</p></div>`,
+            duty: `<h2 style="color: #22c55e; margin-bottom: 15px;">🎯 Professional Duty</h2>
+                <div class="key-point"><div class="key-point-title">Client Duty</div><p>Act in client's best interests, provide competent service, maintain confidentiality.</p></div>
+                <div class="key-point"><div class="key-point-title">Public Safety Duty</div><p>Prioritise public safety over client preferences when significant risk exists.</p></div>
+                <div class="key-point"><div class="key-point-title">Professional Integrity</div><p>Maintain professional standards, continue development, declare limitations.</p></div>`,
+            prioritisation: `<h2 style="color: #22c55e; margin-bottom: 15px;">🔥 Prioritisation Framework</h2>
+                <div class="key-point"><div class="key-point-title">Risk Matrix</div><p>Combine likelihood of failure with consequences to determine priority.</p></div>
+                <div class="key-point"><div class="key-point-title">Target Occupancy</div><p>High-use areas require lower risk tolerance than remote locations.</p></div>
+                <div class="key-point"><div class="key-point-title">Time-Critical Actions</div><p>Immediate: imminent failure; Urgent: high risk within 1 year; Routine: monitoring.</p></div>`
+        };
+
+        function selectModule(module) {
+            document.querySelectorAll('.module-card').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('contentArea').innerHTML = modules[module];
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15-Minute Inspection Practice</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #1e3a5f; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; }
+        .timer-display { text-align: center; font-size: 4rem; font-weight: bold; color: #22c55e; margin: 30px 0; }
+        .timer-display.warning { color: #fbbf24; }
+        .timer-display.critical { color: #ef4444; }
+        .phase-bar { background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 12px; margin-bottom: 20px; border: 2px solid rgba(34,197,94,0.3); }
+        .phase-indicator { display: flex; justify-content: space-between; align-items: center; }
+        .phase-name { font-size: 1.2rem; font-weight: bold; color: #22c55e; }
+        .quick-checklist { background: rgba(30,41,59,0.8); padding: 25px; border-radius: 12px; border: 2px solid rgba(34,197,94,0.2); }
+        .checklist-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .checklist-item input { margin-right: 15px; width: 20px; height: 20px; accent-color: #22c55e; }
+        .btn { padding: 15px 30px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-right: 10px; font-size: 1rem; }
+        .btn-primary { background: #22c55e; color: #fff; }
+        .btn-secondary { background: transparent; border: 2px solid #22c55e; color: #22c55e; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .controls { text-align: center; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ 15-Minute Inspection Practice</h1>
+        <p class="subtitle">Matches exam conditions: 15 min inspection + 5 min write-up</p>
+
+        <div class="phase-bar">
+            <div class="phase-indicator">
+                <div class="phase-name" id="phaseName">Phase 1: Inspection (15 min)</div>
+                <div style="color: #94a3b8;">Tree <span id="treeNum">1</span> of 2</div>
+            </div>
+        </div>
+
+        <div class="timer-display" id="timer">15:00</div>
+
+        <div class="quick-checklist">
+            <h3 style="color: #22c55e; margin-bottom: 15px;">Quick Field Checklist</h3>
+            <div class="checklist-item">
+                <input type="checkbox" id="check1">
+                <label for="check1">Species & basic dimensions (DBH, height)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check2">
+                <label for="check2">Age class selected</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check3">
+                <label for="check3">Targets identified (people, structures)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check4">
+                <label for="check4">Crown condition (density, bud/twig density)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check5">
+                <label for="check5">Stem/base features (buttress, basal wounds)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check6">
+                <label for="check6">Defects recorded (zone, orientation, size)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check7">
+                <label for="check7">Probe/percussion tests (location, depth)</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check8">
+                <label for="check8">Physiological & structural condition assessed</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check9">
+                <label for="check9">Risk rating with rationale</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check10">
+                <label for="check10">Recommendations + timeframes stated</label>
+            </div>
+            <div class="checklist-item">
+                <input type="checkbox" id="check11">
+                <label for="check11">Inspection frequency specified</label>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="startTimer()">▶ Start</button>
+            <button class="btn btn-secondary" onclick="togglePause()">⏸ Pause</button>
+            <button class="btn btn-danger" onclick="resetTimer()">🔄 Reset</button>
+            <button class="btn btn-secondary" onclick="switchPhase()">Switch Phase</button>
+        </div>
+
+        <div style="background: rgba(34,197,94,0.1); padding: 20px; border-radius: 12px; margin-top: 30px; border: 2px solid rgba(34,197,94,0.3);">
+            <h3 style="color: #22c55e; margin-bottom: 10px;">💡 Exam Tips</h3>
+            <ul style="color: #cbd5e1; line-height: 1.8;">
+                <li>Use the improved pro-forma field order: Zone → Orientation → Height → Defect → Test → Significance → Recommendation</li>
+                <li>Every observation must be self-contained and directly defensible</li>
+                <li>Always state timeframes - this is a legal requirement, not optional</li>
+                <li>Link recommendations to specific observations and targets</li>
+                <li>Don't default to sonic tomography - justify why it's needed</li>
+                <li>Complete all checklist items before time ends</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 15 * 60;
+        let timerInterval;
+        let isPaused = false;
+        let isInspectionPhase = true;
+        let currentTree = 1;
+
+        function updateTimer() {
+            if (!isPaused) {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                const timerElement = document.getElementById('timer');
+                timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                timerElement.classList.remove('warning', 'critical');
+                if (timeLeft <= 60) {
+                    timerElement.classList.add('critical');
+                } else if (timeLeft <= 180) {
+                    timerElement.classList.add('warning');
+                }
+                
+                if (timeLeft > 0) {
+                    timeLeft--;
+                } else {
+                    clearInterval(timerInterval);
+                    if (isInspectionPhase) {
+                        alert('Inspection phase complete! Switch to write-up phase (5 minutes).');
+                        switchPhase();
+                    } else {
+                        alert('Time is up! Submit your tree inspection.');
+                        if (currentTree === 1) {
+                            if (confirm('Move to Tree 2?')) {
+                                currentTree = 2;
+                                document.getElementById('treeNum').textContent = '2';
+                                resetTimer();
+                            }
+                        } else {
+                            alert('Both trees completed!');
+                        }
+                    }
+                }
+            }
+        }
+
+        function startTimer() {
+            if (!timerInterval) {
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            event.target.textContent = isPaused ? '▶ Resume' : '⏸ Pause';
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            isPaused = false;
+            timeLeft = isInspectionPhase ? 15 * 60 : 5 * 60;
+            document.getElementById('timer').textContent = isInspectionPhase ? '15:00' : '05:00';
+            document.getElementById('timer').classList.remove('warning', 'critical');
+            document.querySelectorAll('.checklist-item input').forEach(cb => cb.checked = false);
+        }
+
+        function switchPhase() {
+            isInspectionPhase = !isInspectionPhase;
+            timeLeft = isInspectionPhase ? 15 * 60 : 5 * 60;
+            document.getElementById('phaseName').textContent = isInspectionPhase ? 'Phase 1: Inspection (15 min)' : 'Phase 2: Write-up (5 min)';
+            document.getElementById('timer').textContent = isInspectionPhase ? '15:00' : '05:00';
+            document.getElementById('timer').classList.remove('warning', 'critical');
+            
+            if (!isInspectionPhase) {
+                alert('Write-up phase: Complete your pro-forma with all observations, recommendations, and timeframes.');
+            }
+        }
+    </script>
+</body>
+</html>

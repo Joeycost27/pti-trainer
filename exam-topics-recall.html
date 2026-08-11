@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTI Exam Topics Active Recall</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #1e3a5f; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; }
+        .topic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .topic-card { background: rgba(30,41,59,0.8); padding: 20px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); cursor: pointer; }
+        .topic-card:hover, .topic-card.active { border-color: #22c55e; background: rgba(34,197,94,0.1); }
+        .topic-card.mastered { border-color: #22c55e; background: rgba(34,197,94,0.2); }
+        .topic-title { font-weight: bold; margin-bottom: 5px; }
+        .topic-status { font-size: 0.8rem; color: #94a3b8; }
+        .content-area { background: rgba(30,41,59,0.8); padding: 25px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); min-height: 400px; }
+        .question-text { font-size: 1.1rem; margin-bottom: 20px; font-weight: bold; }
+        .answer-area { width: 100%; min-height: 150px; padding: 15px; border-radius: 6px; border: 2px solid rgba(100,116,139,0.3); background: rgba(15,23,42,0.8); color: #f1f5f9; font-size: 14px; margin-bottom: 15px; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-right: 10px; }
+        .btn-primary { background: #22c55e; color: #fff; }
+        .btn-secondary { background: transparent; border: 2px solid #22c55e; color: #22c55e; }
+        .model-answer { background: rgba(34,197,94,0.1); padding: 15px; border-radius: 6px; margin-top: 15px; border: 1px solid rgba(34,197,94,0.3); display: none; }
+        .model-answer.show { display: block; }
+        .progress-bar { background: rgba(0,0,0,0.3); padding: 15px 25px; border-radius: 12px; margin-bottom: 20px; border: 2px solid rgba(34,197,94,0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 PTI Exam Topics Active Recall</h1>
+        <p class="subtitle">Write answers from memory, then check against model answers</p>
+
+        <div class="progress-bar">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span>Progress</span>
+                <span id="progressText">0/16 mastered</span>
+            </div>
+            <div style="background: rgba(15,23,42,0.8); height: 20px; border-radius: 10px; overflow: hidden;">
+                <div id="progressFill" style="height: 100%; background: linear-gradient(90deg, #16a34a, #22c55e); width: 0%; transition: width 0.3s;"></div>
+            </div>
+        </div>
+
+        <div class="topic-grid" id="topicGrid"></div>
+
+        <div class="content-area" id="contentArea">
+            <p style="color: #94a3b8; text-align: center; padding: 50px;">Select a topic to begin practice</p>
+        </div>
+    </div>
+
+    <script>
+        const topics = [
+            {
+                id: 1,
+                title: "Rings and wood/wood cell structure",
+                question: "Describe the structure of wood cells and how annual growth rings form. Why is this important for tree inspection?",
+                answer: "Wood consists of xylem cells that transport water and provide structural support. Annual growth rings form from the cambium layer - early wood (spring growth) has larger, thin-walled cells; late wood (summer/autumn) has smaller, thick-walled cells. This creates visible rings used for age estimation and understanding growth patterns. In inspection, ring patterns can reveal growth stress, reaction wood formation, and historical growth conditions that affect current structural integrity."
+            },
+            {
+                id: 2,
+                title: "CODIT - all 4 walls",
+                question: "Explain the CODIT model and describe all 4 walls. What is the key limitation of CODIT?",
+                answer: "CODIT (Compartmentalisation of Decay in Trees) has 4 walls: Wall 1 resists vertical spread (weakest) via tylosis/mucilage plugs in vessels; Wall 2 resists inward spread via latewood/annual growth rings; Wall 3 resists sideways spread via medullary (ray) cells; Wall 4 (Barrier Zone) resists outward spread and protects future growth (strongest). KEY LIMITATION: CODIT applies to sapwood only - heartwood is already dead tissue and cannot compartmentalise."
+            },
+            {
+                id: 3,
+                title: "Tension wood in broadleaves",
+                question: "Where does tension wood form in broadleaved trees and why? What does its presence indicate?",
+                answer: "In broadleaves, tension wood forms on the upper side of a leaning stem or branch. It is reaction wood that pulls the stem back toward vertical. Its presence indicates the tree is responding to structural stress or lean. However, tension wood can also indicate underlying internal issues - don't assume the tree has 'fixed itself' without further investigation."
+            },
+            {
+                id: 4,
+                title: "Birch polypore attack pathology",
+                question: "Describe the attack pathology of birch polypore (Fomitopsis betulina) on birch trees.",
+                answer: "Birch polypore causes brown rot in birch trees. It breaks down cellulose and hemicellulose while leaving lignin relatively intact, producing characteristic cubical cracking. It reduces structural integrity relatively quickly on birch compared to other species. The fungus is an 'attack' pathogen - actively pathogenic rather than merely saprophytic."
+            },
+            {
+                id: 5,
+                title: "Armillaria mellea attack pathology",
+                question: "Describe the attack pathology of Armillaria mellea (honey fungus).",
+                answer: "Armillaria mellea is an aggressive root and butt pathogen listed as an 'attack' organism. It causes white rot of roots and root collar, spreading through root-to-root contact and rhizomorphs in soil. Diagnostic signs include white mycelial fans under bark and black rhizomorphs. It can cause root plate failure and windthrow, making it a high-hazard pathogen requiring urgent assessment."
+            },
+            {
+                id: 6,
+                title: "Formative pruning benefits and problems",
+                question: "What problems does formative pruning solve, and what problems can it cause if done badly?",
+                answer: "Formative pruning on young trees solves future structural problems by promoting good form, removing defects early, and producing smaller wounds that seal quickly. Problems if done badly: removing too much live material reduces photosynthetic capacity and stored energy, pushing the tree toward static mass faster; improper cuts can introduce decay; poor timing can stress the tree. Planned phased reductions are preferable to large corrective cuts."
+            },
+            {
+                id: 7,
+                title: "1:1 ratio of potential and kinetic energy",
+                question: "Explain the 1:1 ratio of potential and kinetic energy in trees and its significance.",
+                answer: "Trees operate on a balance between potential energy (stored as glucose/carbohydrates) and kinetic energy (used in active growth). The 1:1 ratio represents an optimal balance where energy production equals energy consumption. Young trees have more kinetic energy (dynamic mass) as they actively grow. Mature trees shift toward static mass where energy production and cost are balanced. Beyond this balance point, the tree declines. Pruning affects this ratio by reducing photosynthetic capacity while requiring energy for wound response."
+            },
+            {
+                id: 8,
+                title: "Why inspector training exists",
+                question: "Why does tree inspector training exist? What defence do courts reject?",
+                answer: "Inspector training exists because courts require inspectors to act to a professional, methodical, and consistent standard. Courts explicitly reject 'no standard', 'no time', or 'no resources' as valid defences for inadequate inspection. The 'reasonable inspector' test applies - would a competent inspector with similar training and experience have identified the same defects and made similar recommendations? Training provides the benchmark for professional competence."
+            },
+            {
+                id: 9,
+                title: "Common law vs statute law vs NTSG",
+                question: "Distinguish between common law, statute law, and NTSG guidance in tree inspection.",
+                answer: "Common law is built on precedent ('court of precedents') - inspectors are judged against what a reasonably competent inspector would have done. Statute law is written legislation (e.g., Occupiers' Liability Order, Management of Health & Safety at Work Regs, Roads Order, Planning Act for TPOs). NTSG (National Tree Safety Group) guidance is free industry guidance providing a proportionate approach to tree safety management - it's not law but represents industry best practice and benchmark."
+            },
+            {
+                id: 10,
+                title: "Public liability vs professional indemnity",
+                question: "What is the difference between public liability and professional indemnity insurance?",
+                answer: "Public liability covers claims from people or damage to property arising from the tree itself (e.g., a branch falls and injures someone). Professional indemnity covers your recommendations and professional judgement if they are later shown to be wrong or negligent (e.g., you failed to identify a defect that should have been obvious). Both are relevant to tree inspectors but cover different liability routes."
+            },
+            {
+                id: 11,
+                title: "Crown lifting implications",
+                question: "Describe crown lifting as a technique and its structural/legal implications.",
+                answer: "Crown lifting removes lower branches to increase clearance. Structurally, it can affect the tree's centre of gravity and wind loading. Over-lifting can create 'lion-tailing' where all foliage is concentrated at branch ends, creating long lever arms. Legally, recommendations must be proportionate and defensible - excessive crown lifting without justification could be considered negligent. Works must comply with TPO restrictions and ecological constraints (bird nesting, bat roosts)."
+            },
+            {
+                id: 12,
+                title: "Picus/sonic tomography limitations",
+                question: "What are the two key issues/limitations of Picus/sonic tomography?",
+                answer: "Picus tests only the specific plane/height scanned - it doesn't provide a complete 3D picture of the stem. Results must be correlated with visual assessment and other evidence, not read as standalone proof. The test should be carried out at specific heights (typically 1m and 2m AGL) and these heights must be stated in recommendations. Examiners check that inspectors specify test heights and don't rely on tomography as a default response."
+            },
+            {
+                id: 13,
+                title: "Axiom of uniform tree vs non-optimised",
+                question: "Explain the 'axiom of uniform tree' and what a non-optimised tree/union looks like.",
+                answer: "The 'axiom of uniform tree' assumes that a tree's stress is evenly distributed throughout its structure. In reality, trees are often 'non-optimised' - growth patterns and union forms concentrate stress in specific areas. Examples: V-shaped unions with included bark (non-optimised, weaker) vs U-shaped unions (self-optimised, stronger); co-dominant stems with included bark create stress concentrations. Inspectors must recognise where stress is concentrated rather than assuming uniform distribution."
+            },
+            {
+                id: 14,
+                title: "Negligence of tree inspector",
+                question: "What constitutes negligence of a tree inspector? What defence is invalid?",
+                answer: "Negligence can arise from: (a) missing an obvious defect, or (b) providing negligent professional advice. Courts look for methodical, consistent professional process with stated timeframes. 'No time' or 'no resources' is NOT a valid defence - inspectors are expected to maintain professional standards regardless of workload. The standard is whether a reasonably competent inspector would have identified the defect and made appropriate recommendations."
+            },
+            {
+                id: 15,
+                title: "Landowner requirements and duties",
+                question: "What are the key requirements and duties of landowners regarding tree safety?",
+                answer: "Landowners have a duty of care under the Occupiers' Liability Order to visitors. They must assess and manage risk under Management of Health & Safety at Work Regs. For trees affecting roads, the Roads Order applies. TPO restrictions under Planning Act must be checked before works. Landowners should have a proactive tree management strategy with appropriate inspection frequencies. They are responsible for ensuring inspections are carried out by competent persons."
+            },
+            {
+                id: 16,
+                title: "V-shaped vs U-shaped unions",
+                question: "What is the difference between V-shaped (included bark) unions and U-shaped (optimised) unions?",
+                answer: "V-shaped unions with included bark are non-optimised and structurally weak - the narrow angle predisposes to bark inclusion, preventing proper wood formation across the union. U-shaped unions are self-optimised and stronger - the wider angle allows proper wood formation without included bark. Roughly 25° union angle is associated with increased bark inclusion risk. Inspectors must identify included bark as a significant defect requiring assessment and potential remedial action."
+            }
+        ];
+
+        let masteredTopics = new Set();
+
+        function renderTopics() {
+            const grid = document.getElementById('topicGrid');
+            grid.innerHTML = topics.map(topic => `
+                <div class="topic-card ${masteredTopics.has(topic.id) ? 'mastered' : ''}" onclick="selectTopic(${topic.id})">
+                    <div class="topic-title">${topic.title}</div>
+                    <div class="topic-status">${masteredTopics.has(topic.id) ? '✓ Mastered' : 'Practice'}</div>
+                </div>
+            `).join('');
+            updateProgress();
+        }
+
+        function selectTopic(id) {
+            const topic = topics.find(t => t.id === id);
+            document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('active'));
+            event.target.closest('.topic-card').classList.add('active');
+            
+            document.getElementById('contentArea').innerHTML = `
+                <div class="question-text">${topic.question}</div>
+                <textarea class="answer-area" placeholder="Write your answer from memory..."></textarea>
+                <button class="btn btn-primary" onclick="showAnswer(${topic.id})">Show Model Answer</button>
+                <button class="btn btn-secondary" onclick="markMastered(${topic.id})">✓ Mark as Mastered</button>
+                <div class="model-answer" id="answer-${topic.id}">
+                    <strong>Model Answer:</strong>
+                    <p style="margin-top: 10px; line-height: 1.6;">${topic.answer}</p>
+                </div>
+            `;
+        }
+
+        function showAnswer(id) {
+            document.getElementById(`answer-${id}`).classList.add('show');
+        }
+
+        function markMastered(id) {
+            if (masteredTopics.has(id)) {
+                masteredTopics.delete(id);
+            } else {
+                masteredTopics.add(id);
+            }
+            renderTopics();
+        }
+
+        function updateProgress() {
+            const percent = (masteredTopics.size / topics.length) * 100;
+            document.getElementById('progressText').textContent = `${masteredTopics.size}/${topics.length} mastered`;
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        renderTopics();
+    </script>
+</body>
+</html>

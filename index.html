@@ -1,1142 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tree & Fungi Trainer</title>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: #f1f5f9;
-  padding: 20px;
-  min-height: 100vh;
-}
-.container { max-width: 1000px; margin: 0 auto; }
-h1 { 
-  text-align: center; 
-  color: #22c55e; 
-  font-size: 2rem; 
-  margin-bottom: 30px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-.level-selector {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 15px;
-  margin-bottom: 20px;
-}
-.level-card {
-  background: linear-gradient(135deg, #1e293b, #334155);
-  padding: 20px;
-  border-radius: 12px;
-  border: 2px solid rgba(34,197,94,0.2);
-  cursor: pointer;
-  transition: all 0.3s;
-  position: relative;
-}
-.level-card:hover:not(.locked) {
-  transform: translateY(-4px);
-  border-color: #22c55e;
-  box-shadow: 0 8px 16px rgba(34,197,94,0.3);
-}
-.level-card.active {
-  border-color: #22c55e;
-  background: linear-gradient(135deg, #16a34a, #22c55e);
-}
-.level-card.locked {
-  opacity: 0.5;
-  cursor: not-allowed;
-  border-color: rgba(100,116,139,0.3);
-}
-.level-card.locked::after {
-  content: '🔒';
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
-}
-.level-card.dev-unlocked::after {
-  content: '🔓';
-  color: #a855f7;
-}
-
-/* Alex AI card special styling */
-.level-card.alex-card {
-  border-color: rgba(168,85,247,0.3);
-  background: linear-gradient(135deg, #1e1b4b, #312e81);
-}
-.level-card.alex-card:hover:not(.locked) {
-  border-color: #a855f7;
-  box-shadow: 0 8px 16px rgba(168,85,247,0.35);
-}
-.level-card.alex-card.active {
-  border-color: #a855f7;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-}
-.level-card.alex-card .level-title { color: #e9d5ff; }
-.level-card.alex-card .level-subtitle { color: rgba(233,213,255,0.8); }
-.level-card.alex-card .level-stats { border-color: rgba(168,85,247,0.3); }
-
-.level-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: #fff;
-}
-.level-card.locked .level-title { color: #94a3b8; }
-.level-subtitle {
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.8);
-  margin-bottom: 12px;
-}
-.level-card.locked .level-subtitle { color: #64748b; }
-.level-stats {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.82rem;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255,255,255,0.2);
-}
-.level-card.locked .level-stats { border-color: rgba(100,116,139,0.2); }
-.unlock-requirement {
-  background: rgba(15,23,42,0.8);
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 0.78rem;
-  color: #fbbf24;
-  text-align: center;
-  margin-top: 8px;
-}
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-  margin-bottom: 20px;
-}
-.stat-card {
-  background: rgba(30,41,59,0.8);
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  border: 1px solid rgba(34,197,94,0.2);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-.stat-value {
-  font-size: 32px;
-  font-weight: 700;
-  color: #22c55e;
-}
-.stat-label {
-  font-size: 12px;
-  color: #94a3b8;
-  text-transform: uppercase;
-  margin-top: 5px;
-}
-.filter-bar {
-  background: rgba(30,41,59,0.8);
-  padding: 15px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.filter-bar label { color: #cbd5e1; font-weight: 600; }
-.filter-bar select {
-  padding: 8px 12px;
-  border-radius: 6px;
-  background: rgba(15,23,42,0.8);
-  color: #f1f5f9;
-  border: 2px solid rgba(100,116,139,0.3);
-  font-size: 14px;
-}
-.card {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  border: 1px solid rgba(34,197,94,0.2);
-  margin-bottom: 20px;
-}
-.image-container {
-  width: 100%;
-  max-height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-  background: rgba(15,23,42,0.6);
-  border-radius: 8px;
-  padding: 10px;
-}
-.image-container img {
-  max-width: 100%;
-  max-height: 280px;
-  object-fit: contain;
-  border-radius: 8px;
-}
-.question-text {
-  font-size: 1.2rem;
-  color: #cbd5e1;
-  text-align: center;
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-.meta-info {
-  text-align: center;
-  color: #94a3b8;
-  font-size: 13px;
-  margin-bottom: 15px;
-}
-.options {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-@media (min-width: 640px) {
-  .options { grid-template-columns: 1fr 1fr; }
-}
-.option {
-  background: rgba(30,41,59,0.8);
-  padding: 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: 2px solid rgba(100,116,139,0.3);
-  transition: all 0.2s;
-  font-size: 15px;
-}
-.option:hover {
-  background: rgba(51,65,85,0.9);
-  border-color: rgba(34,197,94,0.5);
-  transform: translateY(-2px);
-}
-.option.correct {
-  background: linear-gradient(135deg, #16a34a, #22c55e);
-  color: #fff;
-  border-color: #22c55e;
-  font-weight: 600;
-}
-.option.wrong {
-  background: linear-gradient(135deg, #dc2626, #ef4444);
-  color: #fff;
-  border-color: #f87171;
-  font-weight: 600;
-}
-.option.disabled {
-  pointer-events: none;
-  opacity: 0.6;
-}
-.explanation {
-  background: rgba(15,23,42,0.9);
-  padding: 20px;
-  border-radius: 8px;
-  border-left: 4px solid #22c55e;
-  display: none;
-  margin-bottom: 20px;
-}
-.explanation.show { display: block; }
-.explanation h4 {
-  color: #22c55e;
-  margin-bottom: 10px;
-}
-.explanation p {
-  margin: 10px 0;
-  line-height: 1.6;
-}
-.explanation strong { color: #cbd5e1; }
-.explanation details {
-  margin-top: 15px;
-}
-.explanation summary {
-  color: #60a5fa;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 8px;
-  background: rgba(30,41,59,0.5);
-  border-radius: 4px;
-}
-.explanation summary:hover {
-  background: rgba(51,65,85,0.7);
-}
-.controls {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 14px;
-}
-.btn-primary {
-  background: linear-gradient(135deg, #16a34a, #22c55e);
-  color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(34,197,94,0.4);
-}
-.btn-secondary {
-  background: transparent;
-  border: 2px solid rgba(34,197,94,0.4);
-  color: #22c55e;
-}
-.btn-secondary:hover {
-  background: rgba(34,197,94,0.1);
-  border-color: #22c55e;
-}
-.btn-modules {
-  background: linear-gradient(135deg, #3b82f6, #60a5fa);
-  color: #fff;
-  border: 2px solid rgba(59,130,246,0.4);
-}
-.btn-modules:hover {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  border-color: #3b82f6;
-  transform: translateY(-2px);
-}
-.btn-fungi {
-  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-  color: #fff;
-  border: 2px solid rgba(139,92,246,0.4);
-}
-.btn-fungi:hover {
-  background: linear-gradient(135deg, #7c3aed, #8b5cf6);
-  border-color: #8b5cf6;
-  transform: translateY(-2px);
-}
-.btn-alex {
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  color: #fff;
-  border: 2px solid rgba(168,85,247,0.4);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.btn-alex:hover {
-  background: linear-gradient(135deg, #6d28d9, #9333ea);
-  border-color: #a855f7;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(168,85,247,0.4);
-}
-.loading {
-  text-align: center;
-  color: #60a5fa;
-  padding: 40px;
-}
-.error {
-  background: rgba(239,68,68,0.2);
-  border: 2px solid #ef4444;
-  color: #fca5a5;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-.hidden { display: none; }
-.unlock-toast {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(135deg, #16a34a, #22c55e);
-  color: #fff;
-  padding: 30px 40px;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-  font-size: 1.5rem;
-  font-weight: 700;
-  z-index: 1000;
-  animation: unlockPulse 0.6s ease-out;
-}
-@keyframes unlockPulse {
-  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-  50% { transform: translate(-50%, -50%) scale(1.1); }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
-
-/* ==================== MODULE VIEWER STYLES ==================== */
-.module-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.9);
-  z-index: 2000;
-  animation: fadeIn 0.3s;
-}
-.module-modal.show { display: flex; }
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-.module-content {
-  display: flex;
-  width: 95%;
-  height: 90%;
-  margin: auto;
-  background: linear-gradient(135deg, #1e293b, #334155);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-}
-.module-sidebar {
-  width: 280px;
-  background: rgba(15,23,42,0.9);
-  padding: 20px;
-  overflow-y: auto;
-  border-right: 2px solid rgba(34,197,94,0.2);
-}
-.module-sidebar h2 {
-  color: #22c55e;
-  font-size: 1.3rem;
-  margin-bottom: 20px;
-  text-align: center;
-}
-.module-list {
-  list-style: none;
-}
-.module-item {
-  padding: 12px 15px;
-  margin-bottom: 8px;
-  background: rgba(30,41,59,0.6);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 2px solid transparent;
-  font-size: 14px;
-}
-.module-item:hover {
-  background: rgba(51,65,85,0.8);
-  border-color: rgba(34,197,94,0.4);
-  transform: translateX(4px);
-}
-.module-item.active {
-  background: linear-gradient(135deg, #16a34a, #22c55e);
-  color: #fff;
-  font-weight: 600;
-  border-color: #22c55e;
-}
-.module-viewer {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: #0f172a;
-}
-.module-header {
-  padding: 20px;
-  background: rgba(30,41,59,0.8);
-  border-bottom: 2px solid rgba(34,197,94,0.2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.module-header h3 {
-  color: #22c55e;
-  font-size: 1.2rem;
-}
-.close-module {
-  background: transparent;
-  border: 2px solid rgba(239,68,68,0.6);
-  color: #f87171;
-  padding: 8px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-.close-module:hover {
-  background: rgba(239,68,68,0.2);
-  border-color: #ef4444;
-}
-.pdf-container {
-  flex: 1;
-  padding: 10px;
-  overflow: hidden;
-}
-.pdf-container iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 8px;
-  background: #fff;
-}
-
-@media (max-width: 768px) {
-  .module-content {
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-  }
-  .module-sidebar {
-    width: 100%;
-    max-height: 200px;
-    border-right: none;
-    border-bottom: 2px solid rgba(34,197,94,0.2);
-  }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTI Training System - Index</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #f1f5f9; padding: 20px; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; font-size: 2.5rem; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 30px; }
+        .countdown { text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 2px solid rgba(34,197,94,0.3); }
+        .countdown-title { color: #22c55e; font-weight: bold; margin-bottom: 10px; }
+        .countdown-days { font-size: 3rem; font-weight: bold; color: #22c55e; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .module-card { background: rgba(30,41,59,0.8); padding: 25px; border-radius: 12px; border: 2px solid rgba(34,197,94,0.2); cursor: pointer; transition: all 0.3s; }
+        .module-card:hover { transform: translateY(-4px); border-color: #22c55e; box-shadow: 0 8px 16px rgba(34,197,94,0.3); }
+        .module-icon { font-size: 2rem; margin-bottom: 15px; }
+        .module-title { font-weight: bold; font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+        .module-desc { font-size: 0.9rem; color: #94a3b8; margin-bottom: 15px; }
+        .module-tag { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+        .tag-high { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .tag-medium { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+        .tag-complete { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .stats-bar { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 2px solid rgba(34,197,94,0.3); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: #22c55e; }
+        .stat-label { font-size: 0.85rem; color: #94a3b8; }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>🌳 PTI Training System</h1>
+        <p class="subtitle">Professional Tree Inspection Resit Preparation - Target: 90%+</p>
 
-<div class="container">
-  <h1>🌲 Tree & Fungi Trainer</h1>
+        <div class="countdown">
+            <div class="countdown-title">⏰ Days Until Resit (9th September 2026)</div>
+            <div class="countdown-days" id="daysLeft">29</div>
+            <div style="color: #94a3b8; margin-top: 5px;">Verify date with course provider</div>
+        </div>
 
-  <!-- ===== LEVEL NAVIGATION: 4 explicit cards ===== -->
-  <div class="level-selector">
+        <div class="stats-bar">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">65%</div>
+                    <div class="stat-label">Previous Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">70%</div>
+                    <div class="stat-label">Pass Mark</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">90%+</div>
+                    <div class="stat-label">Target Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">7/8</div>
+                    <div class="stat-label">Modules Complete</div>
+                </div>
+            </div>
+        </div>
 
-    <div class="level-card active" id="level1Card" onclick="selectLevel('level1')">
-      <div class="level-title">⭐ Level 1 — Basic</div>
-      <div class="level-subtitle">Foundation Knowledge</div>
-      <div class="level-stats">
-        <span id="level1Questions">0 questions</span>
-        <span id="level1Accuracy">-</span>
-      </div>
+        <h2 style="color: #22c55e; margin-bottom: 20px;">📚 Training Modules</h2>
+        <div class="module-grid">
+            <div class="module-card" onclick="window.location.href='legal-professional-knowledge.html'">
+                <div class="module-icon">⚖️</div>
+                <div class="module-title">Legal & Professional Duty</div>
+                <div class="module-desc">Addresses written exam gaps (22/40). Covers standards, negligence, duty, prioritisation.</div>
+                <span class="module-tag tag-complete">COMPLETE</span>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='systematic-inspection-checklist.html'">
+                <div class="module-icon">✅</div>
+                <div class="module-title">Systematic Inspection Checklist</div>
+                <div class="module-desc">Addresses field recording omissions. 30-min timer, progress tracking, required fields.</div>
+                <span class="module-tag tag-complete">COMPLETE</span>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='terminology-reference.html'">
+                <div class="module-icon">📖</div>
+                <div class="module-title">Terminology & Abbreviations</div>
+                <div class="module-desc">Searchable reference for all defect codes, measurements, zones, fungi, risk systems.</div>
+                <span class="module-tag tag-complete">COMPLETE</span>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='improved-proforma.html'">
+                <div class="module-icon">📋</div>
+                <div class="module-title">Improved Pro-Forma</div>
+                <div class="module-desc">Better field order (Zone→Orientation→Height→Defect→Test→Significance→Recommendation). 15-min timer.</div>
+                <span class="module-tag tag-complete">COMPLETE</span>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='exam-topics-recall.html'">
+                <div class="module-icon">🧠</div>
+                <div class="module-title">Exam Topics Active Recall</div>
+                <div class="module-desc">16 topics from your notes. Write answers from memory, check against model answers.</div>
+                <span class="module-tag tag-complete">COMPLETE</span>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='fungi-significance-training.html'">
+                <div class="module-icon">🍄</div>
+                <div class="module-title">Fungi Significance Training</div>
+                <div class="module-desc">Colonisation strategy and significance for key fungi. Addresses fungi ID gaps.</div>
+                <span class="module-tag tag-complete">COMPLETE</span>
+            </div>
+
+            <div class="module-card" style="opacity: 0.6;">
+                <div class="module-icon">🌱</div>
+                <div class="module-title">CODIT & Tree Biology</div>
+                <div class="module-desc">Energy concepts, growth, CODIT walls, reaction wood. Knowledge module.</div>
+                <span class="module-tag tag-medium">PENDING</span>
+            </div>
+
+            <div class="module-card" onclick="window.location.href='15min-inspection-practice.html'">
+                <div class="module-icon">⏱️</div>
+                <div class="module-title">15-Minute Inspection Practice</div>
+                <div class="module-desc">Timed practice matching exam conditions (15 min inspection + 5 min write-up).</div>
+                <span class="module-tag tag-complete">COMPLETE</span>
+            </div>
+        </div>
+
+        <h2 style="color: #22c55e; margin-bottom: 20px;">🎯 Your Assessment Results</h2>
+        <div class="stats-bar">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">22/40</div>
+                    <div class="stat-label">Written (55%)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">15/40</div>
+                    <div class="stat-label">Tree T1 (37.5%)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">12/40</div>
+                    <div class="stat-label">Tree T2 (30%)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">16/20</div>
+                    <div class="stat-label">Fungi (80%)</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: rgba(239, 68, 68, 0.1); padding: 20px; border-radius: 12px; border: 2px solid rgba(239, 68, 68, 0.3); margin-top: 20px;">
+            <h3 style="color: #ef4444; margin-bottom: 10px;">⚠️ Critical Requirements</h3>
+            <ul style="color: #cbd5e1; line-height: 1.8;">
+                <li>Each tree must achieve minimum 70% individually</li>
+                <li>Overall combined mark must be 70%+</li>
+                <li>Failure requires attending full 3-day PTI programme again</li>
+                <li>Verify resit date (Friday 9th September 2026) with provider</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="level-card" id="level1_hardCard" onclick="selectLevel('level1_hard')">
-      <div class="level-title">🔥 Level 1 — Hard</div>
-      <div class="level-subtitle">Foundation Challenge</div>
-      <div class="level-stats">
-        <span id="level1_hardQuestions">0 questions</span>
-        <span id="level1_hardAccuracy">-</span>
-      </div>
-    </div>
-
-    <div class="level-card" id="level2Card" onclick="selectLevel('level2')">
-      <div class="level-title">📊 Level 2</div>
-      <div class="level-subtitle">Advanced Practice</div>
-      <div class="level-stats">
-        <span id="level2Questions">0 questions</span>
-        <span id="level2Accuracy">-</span>
-      </div>
-    </div>
-
-    <div class="level-card alex-card" id="level3Card" onclick="selectLevel('level3')">
-      <div class="level-title">🤖 Alex AI Coach</div>
-      <div class="level-subtitle">Professional Mentor</div>
-      <div class="level-stats">
-        <span>Interactive Chat</span>
-        <span id="level3Accuracy">-</span>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Stats Dashboard -->
-  <div class="stats">
-    <div class="stat-card">
-      <div class="stat-value" id="totalQuestions">-</div>
-      <div class="stat-label">Questions</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value" id="attempted">0</div>
-      <div class="stat-label">Attempted</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value" id="weakCount">0</div>
-      <div class="stat-label">Weak Areas</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value" id="accuracy">-</div>
-      <div class="stat-label">Accuracy</div>
-    </div>
-  </div>
-
-  <!-- Filter Bar -->
-  <div class="filter-bar">
-    <label>Category:</label>
-    <select id="categoryFilter">
-      <option value="">All Categories</option>
-    </select>
-    <button class="btn btn-secondary" onclick="resetStats()">🔄 Reset Level Stats</button>
-    <button class="btn btn-modules" onclick="openModules()">📚 Study Modules</button>
-    <button class="btn btn-fungi" onclick="openFungiTrainer()">🍄 Fungi Trainer</button>
-  </div>
-
-  <div id="errorDisplay" class="error hidden"></div>
-
-  <div class="card">
-    <div id="loadingIndicator" class="loading">
-      <p>Loading questions...</p>
-    </div>
-
-    <div id="questionDisplay" class="hidden">
-      <div id="imageContainer" class="image-container hidden"></div>
-      
-      <div class="question-text" id="questionText">Press Practice to start</div>
-      
-      <div class="meta-info" id="metaInfo"></div>
-      
-      <div class="options" id="optionsContainer"></div>
-      
-      <div class="explanation" id="explanation"></div>
-      
-      <div class="controls">
-        <button class="btn btn-primary" onclick="practiceQuestion()">🎯 Practice</button>
-        <button class="btn btn-secondary" onclick="nextQuestion()">Next ➔</button>
-        <button class="btn btn-secondary" onclick="practiceWeak()">💪 Weak Areas (<span id="weakCountBtn">0</span>)</button>
-        <button class="btn btn-alex" onclick="openAlex()">🤖 Ask Alex</button>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- MODULE VIEWER MODAL -->
-<div id="moduleModal" class="module-modal">
-  <div class="module-content">
-    <div class="module-sidebar">
-      <h2>📚 Study Modules</h2>
-      <ul class="module-list" id="moduleList"></ul>
-    </div>
-    <div class="module-viewer">
-      <div class="module-header">
-        <h3 id="moduleTitle">Select a module</h3>
-        <button class="close-module" onclick="closeModules()">✕ Close</button>
-      </div>
-      <div class="pdf-container">
-        <iframe id="pdfViewer" src=""></iframe>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-// ============================================
-// TSV FILE URLS - GITHUB RAW LINKS
-// ============================================
-const TSV_URLS = {
-  level1: 'https://raw.githubusercontent.com/Joeycost27/pti-trainer/main/tsv/Level1.tsv',
-  level1_hard: 'https://raw.githubusercontent.com/Joeycost27/pti-trainer/main/tsv/Level1_Hard.tsv',
-  level2: 'https://raw.githubusercontent.com/Joeycost27/pti-trainer/main/tsv/Level2.tsv',
-  level3: 'pending'
-};
-
-// Alex AI Claude Project URL
-const ALEX_URL = 'https://claude.ai/project/019b147f-17a3-7085-b791-0e08e0b317d4';
-
-// Fungi Trainer URL
-const FUNGI_URL = 'https://joeycost27.github.io/Fungi-Trainer/index';
-
-// ============================================
-// MODULE CONFIGURATION
-// ============================================
-const MODULES = [
-  { id: 0, title: 'Module 0: Tree Biology Fundamentals', file: 'PTI Study Guide - Module 0_Tree Biology Fundamentals.pdf' },
-  { id: 1, title: 'Module 1: Measurement Techniques', file: 'PTI Study Guide - Module 1_ Measurement Techniques.pdf' },
-  { id: 2, title: 'Module 2: Structural Assessment Tools', file: 'PTI Study Guide - Module 2_ Structural Assessment Tools.pdf' },
-  { id: 3, title: 'Module 3: Cable & Support Systems', file: 'PTI Study Guide - Module 3_ Cable & Support Systems.pdf' },
-  { id: 4, title: 'Module 4: Biomechanics Fundamentals', file: 'PTI Study Guide - MODULE 4 — BIOMECHANICS FUNDAMENTALS.pdf' },
-  { id: 5, title: 'Module 5: Pathogen Identification', file: 'PTI Study Guide - MODULE 5 — PATHOGEN IDENTIFICATION.pdf' },
-  { id: 6, title: 'Module 6: Disease Progression', file: 'PTI Study Guide - MODULE 6 — DISEASE PROGRESSION.pdf' },
-  { id: 7, title: 'Module 7: Risk Assessment Frameworks', file: 'PTI Study Guide - MODULE 7 — RISK ASSESSMENT FRAMEWORKS.pdf' },
-  { id: 8, title: 'Module 8: Management Options', file: 'PTI Study Guide - MODULE 8 — MANAGEMENT OPTIONS (CONCEPTUAL).pdf' },
-  { id: 9, title: 'Module 9: Legal & Policy Context', file: 'PTI Study Guide - MODULE 9 — LEGAL & POLICY CONTEXT (UK).pdf' },
-  { id: 10, title: 'Module 10: Inspection Protocols', file: 'PTI Study Guide - MODULE 10 — INSPECTION PROTOCOLS.pdf' },
-  { id: 11, title: 'Module 11: Climate & Environmental Change', file: 'PTI Study Guide - MODULE 11 — CLIMATE, ENVIRONMENTAL CHANGE & TREE RISK.pdf' },
-  { id: 12, title: 'Module 12: Professional Practice & Ethics', file: 'PTI Study Guide - MODULE 12 — PROFESSIONAL PRACTICE, ETHICS & COMPETENCE.pdf' }
-];
-
-// ============================================
-// MODULE VIEWER FUNCTIONS
-// ============================================
-function openModules() {
-  const modal = document.getElementById('moduleModal');
-  const moduleList = document.getElementById('moduleList');
-  
-  moduleList.innerHTML = '';
-  MODULES.forEach(module => {
-    const li = document.createElement('li');
-    li.className = 'module-item';
-    li.textContent = module.title;
-    li.onclick = (e) => loadModule(module, e.target);
-    moduleList.appendChild(li);
-  });
-  
-  modal.classList.add('show');
-  
-  // Load first module by default
-  const firstItem = moduleList.querySelector('.module-item');
-  if (firstItem) loadModule(MODULES[0], firstItem);
-}
-
-function closeModules() {
-  document.getElementById('moduleModal').classList.remove('show');
-  document.getElementById('pdfViewer').src = '';
-}
-
-function loadModule(module, target) {
-  document.querySelectorAll('.module-item').forEach(item => {
-    item.classList.remove('active');
-  });
-  if (target) target.classList.add('active');
-  
-  const pdfUrl = `modules/${module.file}`;
-  document.getElementById('pdfViewer').src = pdfUrl;
-  document.getElementById('moduleTitle').textContent = module.title;
-}
-
-document.getElementById('moduleModal').addEventListener('click', function(e) {
-  if (e.target === this) {
-    closeModules();
-  }
-});
-
-// ============================================
-// EXTERNAL LINKS
-// ============================================
-function openAlex() {
-  window.open(ALEX_URL, '_blank');
-}
-
-function openFungiTrainer() {
-  window.open(FUNGI_URL, '_blank');
-}
-
-// ============================================
-// STATE MANAGEMENT
-// ============================================
-let allQuestions = {
-  level1: [],
-  level1_hard: [],
-  level2: [],
-  level3: []
-};
-
-let currentLevel = 'level1';
-let currentQuestion = null;
-let filteredQuestions = [];
-let devModeActive = false;
-
-let stats = {
-  level1: { attempted: 0, correct: 0, weak: new Set() },
-  level1_hard: { attempted: 0, correct: 0, weak: new Set() },
-  level2: { attempted: 0, correct: 0, weak: new Set() },
-  level3: { attempted: 0, correct: 0, weak: new Set() }
-};
-
-const STATS_KEY = 'treeTrainerStatsV2';
-const DEV_KEY = 'treeTrainerDevMode';
-
-const UNLOCK_REQUIREMENTS = {
-  level2: { level: 'level1', threshold: 70, minAttempts: 100 },
-  level3: { level: 'level2', threshold: 75, minAttempts: 100 }
-};
-
-// ============================================
-// INITIALIZATION
-// ============================================
-function loadDevMode() {
-  const saved = localStorage.getItem(DEV_KEY);
-  if (saved === 'true') {
-    devModeActive = true;
-    console.log('🔓 Developer mode active');
-    console.log('To disable: localStorage.removeItem("treeTrainerDevMode"); location.reload();');
-  } else {
-    console.log('🔑 To enable dev mode (unlock all levels):');
-    console.log('localStorage.setItem("treeTrainerDevMode", "true"); location.reload();');
-  }
-}
-
-function init() {
-  loadStats();
-  loadDevMode();
-  loadQuestions();
-  checkUnlocks();
-  updateLevelCards();
-  selectLevel('level1');
-}
-
-async function loadQuestions() {
-  document.getElementById('loadingIndicator').classList.remove('hidden');
-  document.getElementById('questionDisplay').classList.add('hidden');
-  
-  console.log('📥 Loading TSV files from GitHub...');
-  
-  try {
-    const promises = [];
-    
-    for (const [level, url] of Object.entries(TSV_URLS)) {
-      if (url && url !== 'pending') {
-        promises.push(
-          fetch(url)
-            .then(r => {
-              console.log(`Fetching ${level}: ${r.status} ${r.statusText}`);
-              if (!r.ok) throw new Error(`HTTP ${r.status}`);
-              return r.text();
-            })
-            .then(text => {
-              allQuestions[level] = parseCSV(text);
-              console.log(`✅ ${level}: ${allQuestions[level].length} questions loaded`);
-            })
-            .catch(err => {
-              console.error(`❌ Failed to load ${level}:`, err);
-              showError(`Failed to load ${level}: ${err.message}`);
-            })
-        );
-      }
-    }
-    
-    await Promise.all(promises);
-    
-    document.getElementById('loadingIndicator').classList.add('hidden');
-    document.getElementById('questionDisplay').classList.remove('hidden');
-    
-    console.log('✅ All loading complete');
-    updateLevelCards();
-    selectLevel(currentLevel);
-    
-  } catch (error) {
-    console.error('❌ Loading error:', error);
-    showError('Failed to load questions: ' + error.message);
-    document.getElementById('loadingIndicator').classList.add('hidden');
-  }
-}
-
-function loadStats() {
-  const saved = localStorage.getItem(STATS_KEY);
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    Object.keys(stats).forEach(level => {
-      if (parsed[level]) {
-        stats[level].attempted = parsed[level].attempted || 0;
-        stats[level].correct = parsed[level].correct || 0;
-        stats[level].weak = new Set(parsed[level].weak || []);
-      }
-    });
-  }
-}
-
-function saveStats() {
-  const toSave = {};
-  Object.keys(stats).forEach(level => {
-    toSave[level] = {
-      attempted: stats[level].attempted,
-      correct: stats[level].correct,
-      weak: Array.from(stats[level].weak)
-    };
-  });
-  localStorage.setItem(STATS_KEY, JSON.stringify(toSave));
-  updateStatsDisplay();
-  checkUnlocks();
-}
-
-function loadUnlocks() {
-  // All levels freely accessible — no unlock requirements
-  return { level1: true, level1_hard: true, level2: true, level3: true };
-}
-
-function checkUnlocks() {
-  updateLevelCards();
-}
-
-function showUnlockToast(message) {
-  const toast = document.createElement('div');
-  toast.className = 'unlock-toast';
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  
-  setTimeout(() => {
-    toast.remove();
-  }, 3000);
-}
-
-function getAccuracy(level) {
-  if (stats[level].attempted === 0) return 0;
-  return Math.round((stats[level].correct / stats[level].attempted) * 100);
-}
-
-function updateLevelCards() {
-  // Level 1 Basic
-  document.getElementById('level1Questions').textContent = `${allQuestions.level1.length} questions`;
-  const l1Acc = getAccuracy('level1');
-  document.getElementById('level1Accuracy').textContent = l1Acc > 0 ? l1Acc + '%' : '-';
-
-  // Level 1 Hard
-  document.getElementById('level1_hardQuestions').textContent = `${allQuestions.level1_hard.length} questions`;
-  const l1hAcc = getAccuracy('level1_hard');
-  document.getElementById('level1_hardAccuracy').textContent = l1hAcc > 0 ? l1hAcc + '%' : '-';
-
-  // Level 2
-  document.getElementById('level2Questions').textContent = `${allQuestions.level2.length} questions`;
-  const l2Acc = getAccuracy('level2');
-  document.getElementById('level2Accuracy').textContent = l2Acc > 0 ? l2Acc + '%' : '-';
-}
-
-function selectLevel(level) {
-  // Level 3 → open Alex AI
-  if (level === 'level3') {
-    openAlex();
-    return;
-  }
-  
-  currentLevel = level;
-  
-  document.querySelectorAll('.level-card').forEach(card => {
-    card.classList.remove('active');
-  });
-  document.getElementById(level + 'Card').classList.add('active');
-  
-  loadCurrentLevel();
-}
-
-function loadCurrentLevel() {
-  let questions = [];
-  
-  if (currentLevel === 'level1') {
-    questions = allQuestions.level1;
-  } else if (currentLevel === 'level1_hard') {
-    questions = allQuestions.level1_hard;
-  } else {
-    questions = allQuestions[currentLevel];
-  }
-  
-  questions = questions.filter(q => q.active === 'YES');
-  
-  buildCategoryFilter(questions);
-  filterQuestions(questions);
-  
-  updateStatsDisplay();
-}
-
-function buildCategoryFilter(questions) {
-  const categories = [...new Set(questions.map(q => q.category))].sort();
-  const select = document.getElementById('categoryFilter');
-  
-  select.innerHTML = '<option value="">All Categories</option>';
-  categories.forEach(cat => {
-    const option = document.createElement('option');
-    option.value = cat;
-    option.textContent = cat;
-    select.appendChild(option);
-  });
-  
-  select.onchange = () => {
-    const allLevelQuestions = getCurrentQuestions().filter(q => q.active === 'YES');
-    filterQuestions(allLevelQuestions);
-  };
-}
-
-function filterQuestions(questions) {
-  const category = document.getElementById('categoryFilter').value;
-  filteredQuestions = category 
-    ? questions.filter(q => q.category === category)
-    : [...questions];
-  updateStatsDisplay();
-}
-
-function parseCSV(csv) {
-  const lines = csv.split('\n');
-  const result = [];
-  
-  for (let i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue;
-    
-    const parts = lines[i].split('\t');
-    if (parts.length < 14) continue;
-    
-    const question = {
-      id: parseInt(parts[0]),
-      active: parts[1],
-      category: parts[2],
-      question: parts[3],
-      optionA: parts[4],
-      optionB: parts[5],
-      optionC: parts[6],
-      optionD: parts[7],
-      correctAnswer: parseInt(parts[8]),
-      learn: parts[9],
-      whyMatters: parts[10],
-      deepDive: parts[11] || '',
-      imageRef: parts[12] || '',
-      notes: parts[13] || ''
-    };
-    
-    result.push(question);
-  }
-  
-  return result;
-}
-
-function practiceQuestion() {
-  const pool = filteredQuestions.length > 0 ? filteredQuestions : getCurrentQuestions();
-  if (pool.length === 0) {
-    alert('No questions available');
-    return;
-  }
-  
-  currentQuestion = pool[Math.floor(Math.random() * pool.length)];
-  displayQuestion(currentQuestion);
-}
-
-function nextQuestion() {
-  practiceQuestion();
-}
-
-function practiceWeak() {
-  const allLevelQuestions = getCurrentQuestions();
-  const weakQuestions = allLevelQuestions.filter(q => stats[currentLevel].weak.has(q.id));
-  
-  if (weakQuestions.length === 0) {
-    alert('No weak areas yet. Answer questions incorrectly to add them here for review.');
-    return;
-  }
-  
-  currentQuestion = weakQuestions[Math.floor(Math.random() * weakQuestions.length)];
-  displayQuestion(currentQuestion);
-}
-
-function getCurrentQuestions() {
-  if (currentLevel === 'level1') return allQuestions.level1;
-  if (currentLevel === 'level1_hard') return allQuestions.level1_hard;
-  return allQuestions[currentLevel] || [];
-}
-
-function displayQuestion(q) {
-  document.getElementById('explanation').classList.remove('show');
-  
-  const imageContainer = document.getElementById('imageContainer');
-  if (q.imageRef) {
-    imageContainer.innerHTML = `<img src="images/${q.imageRef}.jpg" alt="Question ${q.id}" onerror="this.parentElement.classList.add('hidden')">`;
-    imageContainer.classList.remove('hidden');
-  } else {
-    imageContainer.classList.add('hidden');
-  }
-  
-  document.getElementById('questionText').textContent = q.question;
-  
-  const levelLabels = {
-    level1: 'Level 1 — Basic',
-    level1_hard: 'Level 1 — Hard',
-    level2: 'Level 2',
-    level3: 'Level 3'
-  };
-  const levelDisplay = levelLabels[currentLevel] || currentLevel;
-  document.getElementById('metaInfo').textContent = `${levelDisplay} | ${q.category} | Question ${q.id}`;
-  
-  const options = [
-    { text: q.optionA, index: 0 },
-    { text: q.optionB, index: 1 },
-    { text: q.optionC, index: 2 },
-    { text: q.optionD, index: 3 }
-  ];
-  
-  for (let i = options.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [options[i], options[j]] = [options[j], options[i]];
-  }
-  
-  q._shuffledOptions = options;
-  
-  const container = document.getElementById('optionsContainer');
-  container.innerHTML = '';
-  
-  options.forEach((opt, displayIndex) => {
-    const div = document.createElement('div');
-    div.className = 'option';
-    div.textContent = opt.text;
-    div.onclick = () => handleAnswer(q, displayIndex);
-    container.appendChild(div);
-  });
-}
-
-function handleAnswer(q, displayIndex) {
-  const options = document.querySelectorAll('.option');
-  const selectedOption = q._shuffledOptions[displayIndex];
-  const correctOption = q._shuffledOptions.find(opt => opt.index === q.correctAnswer);
-  const correctDisplayIndex = q._shuffledOptions.indexOf(correctOption);
-  
-  options.forEach(opt => {
-    opt.onclick = null;
-    opt.classList.add('disabled');
-  });
-  
-  stats[currentLevel].attempted++;
-  
-  if (selectedOption.index === q.correctAnswer) {
-    options[displayIndex].classList.add('correct');
-    stats[currentLevel].correct++;
-    showExplanation(q, true);
-  } else {
-    options[displayIndex].classList.add('wrong');
-    options[correctDisplayIndex].classList.add('correct');
-    stats[currentLevel].weak.add(q.id);
-    showExplanation(q, false);
-  }
-  
-  saveStats();
-}
-
-function showExplanation(q, isCorrect) {
-  const explanation = document.getElementById('explanation');
-  
-  let html = isCorrect
-    ? '<p style="color: #22c55e; font-weight: bold; font-size: 1.1rem;">✔ Correct!</p>'
-    : '<p style="color: #ef4444; font-weight: bold; font-size: 1.1rem;">✗ Incorrect</p>';
-  
-  html += `<p><strong>Key Learning:</strong> ${q.learn}</p>`;
-  html += `<p><strong>Why It Matters:</strong> ${q.whyMatters}</p>`;
-  
-  if (q.deepDive) {
-    const formattedDeepDive = q.deepDive.replace(/<br>/g, '<br>');
-    html += `<details><summary>📖 Deep Dive</summary><div style="margin-top: 12px;">${formattedDeepDive}</div></details>`;
-  }
-  
-  if (q.notes) {
-    html += `<details><summary>📝 Notes</summary><div style="margin-top: 12px;">${q.notes}</div></details>`;
-  }
-  
-  explanation.innerHTML = html;
-  explanation.classList.add('show');
-}
-
-function resetStats() {
-  const levelLabels = {
-    level1: 'Level 1 — Basic',
-    level1_hard: 'Level 1 — Hard',
-    level2: 'Level 2',
-    level3: 'Level 3'
-  };
-  const levelName = levelLabels[currentLevel] || currentLevel;
-  
-  if (confirm(`Reset all progress for ${levelName}? This will clear stats and weak areas for this level only.`)) {
-    stats[currentLevel] = { attempted: 0, correct: 0, weak: new Set() };
-    saveStats();
-    alert('✅ Level stats reset');
-  }
-}
-
-function updateStatsDisplay() {
-  const currentStats = stats[currentLevel];
-  
-  document.getElementById('totalQuestions').textContent = filteredQuestions.length;
-  document.getElementById('attempted').textContent = currentStats.attempted;
-  document.getElementById('weakCount').textContent = currentStats.weak.size;
-  document.getElementById('weakCountBtn').textContent = currentStats.weak.size;
-  
-  const accuracy = getAccuracy(currentLevel);
-  document.getElementById('accuracy').textContent = currentStats.attempted > 0 ? accuracy + '%' : '-';
-}
-
-function showError(message) {
-  const errorDiv = document.getElementById('errorDisplay');
-  errorDiv.textContent = '⚠ Error: ' + message;
-  errorDiv.classList.remove('hidden');
-}
-
-init();
-</script>
-
+    <script>
+        const resitDate = new Date('2026-09-09');
+        const today = new Date();
+        const diffTime = resitDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        document.getElementById('daysLeft').textContent = diffDays > 0 ? diffDays : 'Verify date';
+    </script>
 </body>
 </html>

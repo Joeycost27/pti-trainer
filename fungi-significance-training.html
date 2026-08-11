@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fungi Significance & Colonisation Strategy Training</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #1e3a5f; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; }
+        .fungi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .fungi-card { background: rgba(30,41,59,0.8); padding: 20px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); cursor: pointer; }
+        .fungi-card:hover, .fungi-card.active { border-color: #22c55e; background: rgba(34,197,94,0.1); }
+        .content-area { background: rgba(30,41,59,0.8); padding: 25px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); min-height: 400px; }
+        .key-point { background: rgba(15,23,42,0.6); padding: 15px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #22c55e; }
+        .key-point-title { color: #22c55e; font-weight: bold; margin-bottom: 5px; }
+        .practice-box { background: rgba(15,23,42,0.9); padding: 20px; border-radius: 8px; margin-top: 20px; border: 2px solid rgba(34,197,94,0.3); }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-right: 10px; }
+        .btn-primary { background: #22c55e; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍄 Fungi Significance & Colonisation Strategy</h1>
+        <p class="subtitle">Addresses fungi ID gaps (16/20) - identification + significance required</p>
+
+        <div class="fungi-grid" id="fungiGrid"></div>
+
+        <div class="content-area" id="contentArea">
+            <p style="color: #94a3b8; text-align: center; padding: 50px;">Select a fungus to learn about its significance and colonisation strategy</p>
+        </div>
+    </div>
+
+    <script>
+        const fungiData = [
+            {
+                name: "Kretzschmaria deusta",
+                common: "Brittle cinder",
+                colonisation: "Root and butt pathogen - colonises base and major roots",
+                decay: "Causes brittle, cinder-like wood - rapid loss of structural integrity",
+                significance: "HIGH structural concern near base - can cause sudden failure",
+                urgency: "Immediate investigation required if present at base",
+                assessment: "Check for basal cracking, heave, fungal fruiting bodies at root collar"
+            },
+            {
+                name: "Perenniporia fraxinea",
+                common: "Milky conk",
+                colonisation: "Butt and root rot - primarily on ash (Fraxinus)",
+                decay: "White rot - breaks down lignin, leaves fibrous wood",
+                significance: "Can grow to ~1m - indicates substantial decay in buttress roots",
+                urgency: "Urgent assessment - significant structural compromise",
+                assessment: "Look for white mycelial fruiting body, check basal stability"
+            },
+            {
+                name: "Armillaria mellea",
+                common: "Honey fungus",
+                colonisation: "Aggressive root/butt pathogen - spreads via rhizomorphs and root contact",
+                decay: "White rot of roots and root collar",
+                significance: "HIGH HAZARD - causes root plate failure and windthrow",
+                urgency: "Immediate action required - high risk of tree failure",
+                assessment: "Diagnostic: white mycelial fans under bark, black rhizomorphs in soil"
+            },
+            {
+                name: "Birch polypore",
+                common: "Piptoporus betulinus",
+                colonisation: "Attack pathogen on birch - active pathogenesis",
+                decay: "Brown rot - breaks down cellulose/hemicellulose, cubical cracking",
+                significance: "Reduces structural integrity relatively quickly on birch",
+                urgency: "Urgent - brown rot causes rapid brittleness",
+                assessment: "Check for bracket fungi on stem, assess extent of decay"
+            },
+            {
+                name: "Ceriporiopsis squamosa",
+                common: "Squamous polypore",
+                colonisation: "Active pathogenesis - associated with windthrow risk",
+                decay: "Sapwood becomes exposed, compromises structural stability",
+                significance: "Windthrow risk - reduces anchorage",
+                urgency: "Urgent assessment of root plate and stem stability",
+                assessment: "Check for fruiting bodies, assess wind exposure and targets"
+            },
+            {
+                name: "Ganoderma spp.",
+                common: "Bracket fungi",
+                colonisation: "Root and butt rot - colonises base via root wounds",
+                decay: "White rot - leaves fibrous, spongy wood",
+                significance: "Indicates substantial basal decay - structural compromise",
+                urgency: "Urgent investigation - assess extent of basal decay",
+                assessment: "Look for perennial brackets at base, probe for decay extent"
+            },
+            {
+                name: "Laetiporus sulphureus",
+                common: "Chicken of the woods",
+                colonisation: "Heart rot - colonises heartwood through wounds",
+                decay: "Brown rot - cubical cracking, brittle wood",
+                significance: "Reduces bending strength - sudden failure possible",
+                urgency: "Assess defect size and location relative to targets",
+                assessment: "Check for bright orange brackets, assess decay extent"
+            },
+            {
+                name: "Meripilus giganteus",
+                common: "Giant polypore",
+                colonisation: "Root rot - often at base of beech and other species",
+                decay: "Brown rot - rapid decay of root system",
+                significance: "Root plate failure risk - high windthrow hazard",
+                urgency: "Immediate assessment of root stability",
+                assessment: "Look for large rosette brackets at base, check for heave"
+            }
+        ];
+
+        function renderFungi() {
+            const grid = document.getElementById('fungiGrid');
+            grid.innerHTML = fungiData.map(fungus => `
+                <div class="fungi-card" onclick="selectFungi('${fungus.name}')">
+                    <div style="font-weight: bold; color: #22c55e;">${fungus.name}</div>
+                    <div style="font-size: 0.85rem; color: #94a3b8;">${fungus.common}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectFungi(name) {
+            const fungus = fungiData.find(f => f.name === name);
+            document.querySelectorAll('.fungi-card').forEach(c => c.classList.remove('active'));
+            event.target.closest('.fungi-card').classList.add('active');
+            
+            document.getElementById('contentArea').innerHTML = `
+                <h2 style="color: #22c55e; margin-bottom: 20px;">${fungus.name} (${fungus.common})</h2>
+                
+                <div class="key-point">
+                    <div class="key-point-title">Colonisation Strategy</div>
+                    <p>${fungus.colonisation}</p>
+                </div>
+                
+                <div class="key-point">
+                    <div class="key-point-title">Decay Type</div>
+                    <p>${fungus.decay}</p>
+                </div>
+                
+                <div class="key-point">
+                    <div class="key-point-title">Structural Significance</div>
+                    <p>${fungus.significance}</p>
+                </div>
+                
+                <div class="key-point">
+                    <div class="key-point-title">Urgency</div>
+                    <p>${fungus.urgency}</p>
+                </div>
+                
+                <div class="key-point">
+                    <div class="key-point-title">Assessment Points</div>
+                    <p>${fungus.assessment}</p>
+                </div>
+
+                <div class="practice-box">
+                    <div style="font-weight: bold; margin-bottom: 10px;">Practice Question:</div>
+                    <p style="margin-bottom: 15px;">For ${fungus.name}, describe: (1) colonised tissues, (2) decay type, (3) structural significance, and (4) recommended action timeframe.</p>
+                    <textarea style="width: 100%; min-height: 100px; padding: 10px; border-radius: 6px; border: 2px solid rgba(100,116,139,0.3); background: rgba(15,23,42,0.8); color: #f1f5f9;" placeholder="Write your answer..."></textarea>
+                    <button class="btn btn-primary" style="margin-top: 10px;" onclick="alert('Compare your answer with the information above')">Check Answer</button>
+                </div>
+            `;
+        }
+
+        renderFungi();
+    </script>
+</body>
+</html>

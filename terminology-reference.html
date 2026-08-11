@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTI Terminology & Abbreviations Quick Reference</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #1e3a5f; color: #f1f5f9; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #22c55e; margin-bottom: 20px; }
+        .search-bar { margin-bottom: 20px; }
+        .search-input { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.3); background: rgba(15,23,42,0.8); color: #f1f5f9; font-size: 16px; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .category-card { background: rgba(30,41,59,0.8); padding: 20px; border-radius: 8px; border: 2px solid rgba(34,197,94,0.2); }
+        .category-title { color: #22c55e; font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .term-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .term-code { color: #fbbf24; font-weight: bold; }
+        .term-meaning { color: #cbd5e1; }
+        .highlight { background: rgba(34,197,94,0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 PTI Terminology & Abbreviations Quick Reference</h1>
+        
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search terms..." onkeyup="searchTerms(this.value)">
+        </div>
+
+        <div class="category-grid">
+            <div class="category-card">
+                <div class="category-title">Age & Condition Classes</div>
+                <div class="term-row"><span class="term-code">Y</span><span class="term-meaning">Young</span></div>
+                <div class="term-row"><span class="term-code">MA</span><span class="term-meaning">Middle Aged</span></div>
+                <div class="term-row"><span class="term-code">M</span><span class="term-meaning">Mature</span></div>
+                <div class="term-row"><span class="term-code">A</span><span class="term-meaning">Ancient</span></div>
+                <div class="term-row"><span class="term-code">G</span><span class="term-meaning">Good condition</span></div>
+                <div class="term-row"><span class="term-code">F</span><span class="term-meaning">Fair condition</span></div>
+                <div class="term-row"><span class="term-code">P</span><span class="term-meaning">Poor condition</span></div>
+                <div class="term-row"><span class="term-code">VP</span><span class="term-meaning">Very Poor</span></div>
+                <div class="term-row"><span class="term-code">D</span><span class="term-meaning">Dead</span></div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-title">Units & Measurements</div>
+                <div class="term-row"><span class="term-code">DBH</span><span class="term-meaning">Diameter at Breast Height</span></div>
+                <div class="term-row"><span class="term-code">H</span><span class="term-meaning">Height</span></div>
+                <div class="term-row"><span class="term-code">W</span><span class="term-meaning">Width</span></div>
+                <div class="term-row"><span class="term-code">D</span><span class="term-meaning">Depth</span></div>
+                <div class="term-row"><span class="term-code">L</span><span class="term-meaning">Length</span></div>
+                <div class="term-row"><span class="term-code">Ø</span><span class="term-meaning">Diameter</span></div>
+                <div class="term-row"><span class="term-code">M</span><span class="term-meaning">Metres</span></div>
+                <div class="term-row"><span class="term-code">LM</span><span class="term-meaning">Linear metres</span></div>
+                <div class="term-row"><span class="term-code">CM</span><span class="term-meaning">Centimetres</span></div>
+                <div class="term-row"><span class="term-code">CMH</span><span class="term-meaning">cm height from ground</span></div>
+                <div class="term-row"><span class="term-code">CMW</span><span class="term-meaning">cm width</span></div>
+                <div class="term-row"><span class="term-code">CMD</span><span class="term-meaning">cm depth</span></div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-title">Compass Faces</div>
+                <div class="term-row"><span class="term-code">NF</span><span class="term-meaning">North Face</span></div>
+                <div class="term-row"><span class="term-code">NEF</span><span class="term-meaning">North-East Face</span></div>
+                <div class="term-row"><span class="term-code">EF</span><span class="term-meaning">East Face</span></div>
+                <div class="term-row"><span class="term-code">SEF</span><span class="term-meaning">South-East Face</span></div>
+                <div class="term-row"><span class="term-code">SF</span><span class="term-meaning">South Face</span></div>
+                <div class="term-row"><span class="term-code">SWF</span><span class="term-meaning">South-West Face</span></div>
+                <div class="term-row"><span class="term-code">WF</span><span class="term-meaning">West Face</span></div>
+                <div class="term-row"><span class="term-code">NWF</span><span class="term-meaning">North-West Face</span></div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-title">Defect Codes</div>
+                <div class="term-row"><span class="term-code">DW</span><span class="term-meaning">Deadwood (✷✷ major ≥1m, minor <1m)</span></div>
+                <div class="term-row"><span class="term-code">RG</span><span class="term-meaning">Reactive/Reaction growth</span></div>
+                <div class="term-row"><span class="term-code">CW</span><span class="term-meaning">Compression wood</span></div>
+                <div class="term-row"><span class="term-code">WW</span><span class="term-meaning">Wound wood</span></div>
+                <div class="term-row"><span class="term-code">TW</span><span class="term-meaning">Tension wood</span></div>
+                <div class="term-row"><span class="term-code">PW</span><span class="term-meaning">Pruning wound</span></div>
+                <div class="term-row"><span class="term-code">IB/BI</span><span class="term-meaning">Included bark / Bark inclusion</span></div>
+                <div class="term-row"><span class="term-code">BR</span><span class="term-meaning">Brown rot</span></div>
+                <div class="term-row"><span class="term-code">CR</span><span class="term-meaning">Crack</span></div>
+                <div class="term-row"><span class="term-code">WR</span><span class="term-meaning">White rot</span></div>
+                <div class="term-row"><span class="term-code">SP</span><span class="term-meaning">Split</span></div>
+                <div class="term-row"><span class="term-code">INV</span><span class="term-meaning">Invertebrates</span></div>
+                <div class="term-row"><span class="term-code">HV</span><span class="term-meaning">Heave</span></div>
+                <div class="term-row"><span class="term-code">BS</span><span class="term-meaning">Basal spread</span></div>
+                <div class="term-row"><span class="term-code">MV</span><span class="term-meaning">Movement</span></div>
+                <div class="term-row"><span class="term-code">WT</span><span class="term-meaning">Windthrow</span></div>
+                <div class="term-row"><span class="term-code">CAV</span><span class="term-meaning">Cavity</span></div>
+                <div class="term-row"><span class="term-code">HG</span><span class="term-meaning">Hanger</span></div>
+                <div class="term-row"><span class="term-code">RP</span><span class="term-meaning">Rot pocket</span></div>
+                <div class="term-row"><span class="term-code">TR</span><span class="term-meaning">Tear / Rip</span></div>
+                <div class="term-row"><span class="term-code">DEC</span><span class="term-meaning">Decay</span></div>
+                <div class="term-row"><span class="term-code">FFB</span><span class="term-meaning">Fungal Fruiting Body</span></div>
+                <div class="term-row"><span class="term-code">CD</span><span class="term-meaning">Co-dominant stem</span></div>
+                <div class="term-row"><span class="term-code">COL</span><span class="term-meaning">Colonisation</span></div>
+                <div class="term-row"><span class="term-code">DYW</span><span class="term-meaning">Dysfunctional wood</span></div>
+                <div class="term-row"><span class="term-code">DB</span><span class="term-meaning">Dieback</span></div>
+                <div class="term-row"><span class="term-code">SD</span><span class="term-meaning">Storm damage</span></div>
+                <div class="term-row"><span class="term-code">EP</span><span class="term-meaning">Epicormic growth</span></div>
+                <div class="term-row"><span class="term-code">AG</span><span class="term-meaning">Above ground</span></div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-title">Tree Zones</div>
+                <div class="term-row"><span class="term-code">Root plate</span><span class="term-meaning">Base/root area - check heave, cracking, FFB</span></div>
+                <div class="term-row"><span class="term-code">Buttress</span><span class="term-meaning">Swelling indicates compensation growth over decay</span></div>
+                <div class="term-row"><span class="term-code">Lower stem</span><span class="term-meaning">Main trunk below crown</span></div>
+                <div class="term-row"><span class="term-code">Upper stem</span><span class="term-meaning">Trunk within/above crown</span></div>
+                <div class="term-row"><span class="term-code">Union</span><span class="term-meaning">Where stems/branches join - check IB</span></div>
+                <div class="term-row"><span class="term-code">Leader</span><span class="term-meaning">Dominant upright stem</span></div>
+                <div class="term-row"><span class="term-code">Co-dominant</span><span class="term-meaning">Two+ similar stems competing - weak if IB present</span></div>
+                <div class="term-row"><span class="term-code">Crown</span><span class="term-meaning">Whole upper branch structure</span></div>
+                <div class="term-row"><span class="term-code">Limb/Branch</span><span class="term-meaning">Individual branch</span></div>
+                <div class="term-row"><span class="term-code">Secondary/Tertiary</span><span class="term-meaning">Progressively smaller branch orders</span></div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-title">Test Results</div>
+                <div class="term-row"><span class="term-code">NHT</span><span class="term-meaning">Nylon Hammer Test</span></div>
+                <div class="term-row"><span class="term-code">SOL</span><span class="term-meaning">Sound (percussion test)</span></div>
+                <div class="term-row"><span class="term-code">DUL</span><span class="term-meaning">Dull (percussion test)</span></div>
+                <div class="term-row"><span class="term-code">HOL</span><span class="term-meaning">Hollow (percussion test)</span></div>
+                <div class="term-row"><span class="term-code">PRB</span><span class="term-meaning">Probe (percussion test)</span></div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-title">Risk Systems</div>
+                <div class="term-row"><span class="term-code">VALID</span><span class="term-meaning">David Evans - risk/risk evaluation</span></div>
+                <div class="term-row"><span class="term-code">QTRA</span><span class="term-meaning">Quantified Tree Risk Assessment (Mike Ellison)</span></div>
+                <div class="term-row"><span class="term-code">THREATS</span><span class="term-meaning">Julian Forbes-Laird</span></div>
+                <div class="term-row"><span class="term-code">TRAQ</span><span class="term-meaning">Tree Risk Assessment Qualification (ISA)</span></div>
+                <div class="term-row"><span class="term-code">NTSG</span><span class="term-meaning">National Tree Safety Group guidance</span></div>
+                <div class="term-row"><span class="term-code">BS 3998</span><span class="term-meaning">British Standard: Recommendations for Tree Works</span></div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-title">Key Fungi</div>
+                <div class="term-row"><span class="term-code">Kretzschmaria deusta</span><span class="term-meaning">Root/butt failure - brittle cinder-like wood</span></div>
+                <div class="term-row"><span class="term-code">Perenniporia fraxinea</span><span class="term-meaning">White mycelial FB, ~1m, butt/root rot on ash</span></div>
+                <div class="term-row"><span class="term-code">Armillaria mellea</span><span class="term-meaning">Honey fungus - aggressive root/butt pathogen</span></div>
+                <div class="term-row"><span class="term-code">Birch polypore</span><span class="term-meaning">Brown rot on birch - reduces structural integrity quickly</span></div>
+                <div class="term-row"><span class="term-code">Ceriporiopsis squamosa</span><span class="term-meaning">Active pathogenesis / windthrow risk</span></div>
+            </div>
+
+            <div class="category-card">
+                <div class="category-title">CODIT Walls</div>
+                <div class="term-row"><span class="term-code">Wall 1</span><span class="term-meaning">Vertical spread (weakest) - Tylosis/mucilage plugs</span></div>
+                <div class="term-row"><span class="term-code">Wall 2</span><span class="term-meaning">Inward spread - Latewood/annual growth rings</span></div>
+                <div class="term-row"><span class="term-code">Wall 3</span><span class="term-meaning">Sideways spread - Medullary (ray) cells</span></div>
+                <div class="term-row"><span class="term-code">Wall 4</span><span class="term-meaning">Outward spread (strongest) - Cambium-produced wood</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function searchTerms(query) {
+            query = query.toLowerCase();
+            const rows = document.querySelectorAll('.term-row');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    row.classList.add('highlight');
+                    row.style.display = 'flex';
+                } else {
+                    row.classList.remove('highlight');
+                    row.style.display = query ? 'none' : 'flex';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
